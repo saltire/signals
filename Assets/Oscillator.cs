@@ -20,11 +20,7 @@ public class Oscillator : MonoBehaviour {
 
   public WaveType wave = WaveType.Sine;
 
-  public float gain;
   public float volume = 0.1f;
-
-  public float[] frequencies = { 440, 494, 554, 587, 659, 740, 831, 880 };
-  int freqIndex = 0;
 
   public Oscillator frequencyLFO;
   public float frequencyLFOAmount = 0;
@@ -38,27 +34,11 @@ public class Oscillator : MonoBehaviour {
     rand = new System.Random();
   }
 
-  void Update() {
-    if (Input.GetKeyDown(KeyCode.Space)) {
-      if (gain == 0) {
-        gain = volume;
-        frequency = frequencies[freqIndex];
-        freqIndex = (freqIndex + 1) % frequencies.Length;
-      }
-      else {
-        gain = 0;
-      }
-    }
-  }
-
   void OnAudioFilterRead(float[] data, int channels) {
-    double currentFrequency = frequency;
-    double increment = currentFrequency / sampleFrequency;
-
     for (int i = 0; i < data.Length; i += channels) {
       float value = GetValue();
 
-      data[i] += value * gain;
+      data[i] += value * volume;
 
       if (channels == 2) {
         data[i + 1] = data[i];
@@ -101,6 +81,6 @@ public class Oscillator : MonoBehaviour {
       value *= 1 + volumeLFO.GetValue() * volumeLFOAmount;
     }
 
-    return value;
+    return value * volume;
   }
 }
