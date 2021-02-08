@@ -14,8 +14,8 @@ public class Oscillator : MonoBehaviour {
   const double TAU = Mathf.PI * 2.0;
 
   public double frequency = 440;
-  double increment;
   double phase;
+  double samples = 0;
   double sampleFrequency = 48000;
 
   public WaveType wave = WaveType.Sine;
@@ -46,30 +46,47 @@ public class Oscillator : MonoBehaviour {
   }
 
   void OnAudioFilterRead(float[] data, int channels) {
-    increment = frequency * TAU / sampleFrequency;
+    double increment = frequency / sampleFrequency;
 
     for (int i = 0; i < data.Length; i += channels) {
-      phase = (phase + increment) % TAU;
+      float value = GetValue();
 
-      float value = 0;
-      if (wave == WaveType.Sine) {
-        value = Mathf.Sin((float)phase);
-      }
-      else if (wave == WaveType.Square) {
-        value = Mathf.Sign(Mathf.Sin((float)phase));
-      }
-      else if (wave == WaveType.Sawtooth) {
-        value = (float)(phase / TAU) * 2 - 1;
-      }
-      else if (wave == WaveType.Noise) {
-        value = (float)rand.NextDouble() * 2 - 1;
-      }
-
-      data[i] += (float)(value * gain);
+      data[i] += value * gain;
 
       if (channels == 2) {
         data[i + 1] = data[i];
       }
     }
+  }
+
+  public float GetValue() {
+    return GetValue(samples + 1);
+  }
+
+  public float GetValue(double newSamples) {
+    double sampleIncrement = newSamples - samples;
+    samples = newSamples;
+
+    double increment = sampleIncrement * frequency / sampleFrequency;
+
+    phase = (phase + increment) % 1;
+
+    if (wave == WaveType.Sine) {
+      return Mathf.Sin((float)(phase * TAU));
+    }
+
+    if (wave == WaveType.Square) {
+      return Mathf.Sign(Mathf.Sin((float)(phase * TAU)));
+    }
+
+    if (wave == WaveType.Sawtooth) {
+      return (float)(phase * 2 - 1);
+    }
+
+    if (wave == WaveType.Noise) {
+      return (float)rand.NextDouble() * 2 - 1;
+    }
+
+    return 0;
   }
 }
