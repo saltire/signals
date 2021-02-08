@@ -26,6 +26,12 @@ public class Oscillator : MonoBehaviour {
   public float[] frequencies = { 440, 494, 554, 587, 659, 740, 831, 880 };
   int freqIndex = 0;
 
+  public Oscillator frequencyLFO;
+  public float frequencyLFOAmount = 0;
+
+  public Oscillator volumeLFO;
+  public float volumeLFOAmount = 0;
+
   System.Random rand;
 
   void Awake() {
@@ -46,7 +52,8 @@ public class Oscillator : MonoBehaviour {
   }
 
   void OnAudioFilterRead(float[] data, int channels) {
-    double increment = frequency / sampleFrequency;
+    double currentFrequency = frequency;
+    double increment = currentFrequency / sampleFrequency;
 
     for (int i = 0; i < data.Length; i += channels) {
       float value = GetValue();
@@ -67,26 +74,33 @@ public class Oscillator : MonoBehaviour {
     double sampleIncrement = newSamples - samples;
     samples = newSamples;
 
-    double increment = sampleIncrement * frequency / sampleFrequency;
+    double currentFrequency = frequency;
+    if (frequencyLFO != null && frequencyLFOAmount != 0) {
+      currentFrequency = frequency + frequencyLFO.GetValue() * frequencyLFOAmount;
+    }
+    double increment = sampleIncrement * currentFrequency / sampleFrequency;
 
     phase = (phase + increment) % 1;
 
+    float value = 0;
+
     if (wave == WaveType.Sine) {
-      return Mathf.Sin((float)(phase * TAU));
+      value = Mathf.Sin((float)(phase * TAU));
+    }
+    else if (wave == WaveType.Square) {
+      value = Mathf.Sign(Mathf.Sin((float)(phase * TAU)));
+    }
+    else if (wave == WaveType.Sawtooth) {
+      value = (float)(phase * 2 - 1);
+    }
+    else if (wave == WaveType.Noise) {
+      value = (float)rand.NextDouble() * 2 - 1;
     }
 
-    if (wave == WaveType.Square) {
-      return Mathf.Sign(Mathf.Sin((float)(phase * TAU)));
+    if (volumeLFO != null && volumeLFOAmount != 0) {
+      value *= 1 + volumeLFO.GetValue() * volumeLFOAmount;
     }
 
-    if (wave == WaveType.Sawtooth) {
-      return (float)(phase * 2 - 1);
-    }
-
-    if (wave == WaveType.Noise) {
-      return (float)rand.NextDouble() * 2 - 1;
-    }
-
-    return 0;
+    return value;
   }
 }
