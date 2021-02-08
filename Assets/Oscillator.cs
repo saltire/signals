@@ -13,14 +13,17 @@ public enum WaveType {
 public class Oscillator : MonoBehaviour {
   const double TAU = Mathf.PI * 2.0;
 
-  public double frequency = 440;
   double phase;
-  double samples = 0;
+  double sampleCount = 0;
   double sampleFrequency = 48000;
 
-  public WaveType wave = WaveType.Sine;
+  public double frequency = 440;
+  public float frequencyAdjustSensitivity = 1;
 
   public float volume = 0.1f;
+  public float volumeAdjustSensitivity = .1f;
+
+  public WaveType wave = WaveType.Sine;
 
   public Oscillator frequencyLFO;
   public float frequencyLFOAmount = 0;
@@ -32,6 +35,15 @@ public class Oscillator : MonoBehaviour {
 
   void Awake() {
     rand = new System.Random();
+  }
+
+  public void AdjustFrequency(float speed) {
+    // TODO: rounding options; exponentially increase speed; accelerate speed over time
+    frequency = Mathf.Max(0, (float)frequency + speed * Time.deltaTime * frequencyAdjustSensitivity);
+  }
+
+  public void AdjustVolume(float speed) {
+    volume = Mathf.Max(0, volume + speed * Time.deltaTime * volumeAdjustSensitivity);
   }
 
   void OnAudioFilterRead(float[] data, int channels) {
@@ -47,12 +59,12 @@ public class Oscillator : MonoBehaviour {
   }
 
   public float GetValue() {
-    return GetValue(samples + 1);
+    return GetValue(sampleCount + 1);
   }
 
-  public float GetValue(double newSamples) {
-    double sampleIncrement = newSamples - samples;
-    samples = newSamples;
+  public float GetValue(double newSampleCount) {
+    double sampleIncrement = newSampleCount - sampleCount;
+    sampleCount = newSampleCount;
 
     double currentFrequency = frequency;
     if (frequencyLFO != null && frequencyLFOAmount != 0) {
