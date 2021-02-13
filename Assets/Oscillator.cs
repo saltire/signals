@@ -26,11 +26,8 @@ public class Oscillator : MonoBehaviour, IPointerClickHandler {
 
   public WaveType wave = WaveType.Sine;
 
-  public Oscillator frequencyLFO;
-  public float frequencyLFOAmount = 0;
-
-  public Oscillator volumeLFO;
-  public float volumeLFOAmount = 0;
+  public SignalInput frequencyAdjustInput;
+  public SignalInput volumeAdjustInput;
 
   System.Random rand;
 
@@ -68,8 +65,8 @@ public class Oscillator : MonoBehaviour, IPointerClickHandler {
     sampleCount = newSampleCount;
 
     double currentFrequency = frequency;
-    if (frequencyLFO != null && frequencyLFOAmount != 0) {
-      currentFrequency = frequency + frequencyLFO.GetValue() * frequencyLFOAmount;
+    if (frequencyAdjustInput.IsConnected()) {
+      currentFrequency += frequencyAdjustInput.GetValue();
     }
     double increment = sampleIncrement * currentFrequency / sampleFrequency;
 
@@ -90,8 +87,8 @@ public class Oscillator : MonoBehaviour, IPointerClickHandler {
       value = (float)rand.NextDouble() * 2 - 1;
     }
 
-    if (volumeLFO != null && volumeLFOAmount != 0) {
-      value *= 1 + volumeLFO.GetValue() * volumeLFOAmount;
+    if (volumeAdjustInput.IsConnected()) {
+      value *= 1 + volumeAdjustInput.GetValue();
     }
 
     return value * volume;

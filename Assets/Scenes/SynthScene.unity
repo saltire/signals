@@ -251,7 +251,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 1
+  m_Radius: 0.75
 --- !u!50 &409116095
 Rigidbody2D:
   serializedVersion: 4
@@ -289,18 +289,6 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.5
---- !u!114 &487917839 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2264666493875005848, guid: e3d905d2914862648a69dfcfb4600b6b,
-    type: 3}
-  m_PrefabInstance: {fileID: 1844345552}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: de307dcde9bacbf48933266bc68acb8b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -590,6 +578,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2264666493875005848, guid: e3d905d2914862648a69dfcfb4600b6b,
         type: 3}
+      propertyPath: volume
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2264666493875005848, guid: e3d905d2914862648a69dfcfb4600b6b,
+        type: 3}
       propertyPath: frequency
       value: 5
       objectReference: {fileID: 0}
@@ -655,16 +648,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e3d905d2914862648a69dfcfb4600b6b, type: 3}
---- !u!114 &905441560 stripped
+--- !u!114 &844879171 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2264666493875005848, guid: e3d905d2914862648a69dfcfb4600b6b,
+  m_CorrespondingSourceObject: {fileID: 7914494502750240979, guid: e3d905d2914862648a69dfcfb4600b6b,
     type: 3}
   m_PrefabInstance: {fileID: 753480912}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: de307dcde9bacbf48933266bc68acb8b, type: 3}
+  m_Script: {fileID: 11500000, guid: b2bbf918be7dcd54b8f2e5e67f6c4c06, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1001 &1670273757
@@ -678,6 +671,11 @@ PrefabInstance:
         type: 3}
       propertyPath: wave
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2264666493875005848, guid: e3d905d2914862648a69dfcfb4600b6b,
+        type: 3}
+      propertyPath: volume
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2264666493875005850, guid: e3d905d2914862648a69dfcfb4600b6b,
         type: 3}
@@ -748,6 +746,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2264666493875005848, guid: e3d905d2914862648a69dfcfb4600b6b,
+        type: 3}
+      propertyPath: volume
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2264666493875005848, guid: e3d905d2914862648a69dfcfb4600b6b,
         type: 3}
       propertyPath: frequency
@@ -900,6 +903,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2025220108 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7914494502750240979, guid: e3d905d2914862648a69dfcfb4600b6b,
+    type: 3}
+  m_PrefabInstance: {fileID: 1844345552}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2bbf918be7dcd54b8f2e5e67f6c4c06, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &2031321614 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2264666493875005848, guid: e3d905d2914862648a69dfcfb4600b6b,
@@ -923,12 +938,12 @@ PrefabInstance:
         type: 3}
       propertyPath: volumeLFO
       value: 
-      objectReference: {fileID: 487917839}
+      objectReference: {fileID: 0}
     - target: {fileID: 2264666493875005848, guid: e3d905d2914862648a69dfcfb4600b6b,
         type: 3}
       propertyPath: frequencyLFO
       value: 
-      objectReference: {fileID: 905441560}
+      objectReference: {fileID: 0}
     - target: {fileID: 2264666493875005848, guid: e3d905d2914862648a69dfcfb4600b6b,
         type: 3}
       propertyPath: volumeLFOAmount
@@ -999,5 +1014,25 @@ PrefabInstance:
       propertyPath: m_Name
       value: Oscillator 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4000135919241692431, guid: e3d905d2914862648a69dfcfb4600b6b,
+        type: 3}
+      propertyPath: amount
+      value: 0.75
+      objectReference: {fileID: 0}
+    - target: {fileID: 4000135919241692431, guid: e3d905d2914862648a69dfcfb4600b6b,
+        type: 3}
+      propertyPath: connectedOutput
+      value: 
+      objectReference: {fileID: 2025220108}
+    - target: {fileID: 6591029901152934953, guid: e3d905d2914862648a69dfcfb4600b6b,
+        type: 3}
+      propertyPath: amount
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 6591029901152934953, guid: e3d905d2914862648a69dfcfb4600b6b,
+        type: 3}
+      propertyPath: connectedOutput
+      value: 
+      objectReference: {fileID: 844879171}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e3d905d2914862648a69dfcfb4600b6b, type: 3}
