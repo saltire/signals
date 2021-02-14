@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 
 public enum WaveType {
@@ -11,7 +10,7 @@ public enum WaveType {
   Noise,
 };
 
-public class Oscillator : MonoBehaviour, IPointerClickHandler {
+public class Oscillator : MonoBehaviour {
   const double TAU = Mathf.PI * 2.0;
 
   double phase;
@@ -92,9 +91,5 @@ public class Oscillator : MonoBehaviour, IPointerClickHandler {
     }
 
     return value * volume;
-  }
-
-  public void OnPointerClick(PointerEventData data) {
-    Util.Log("Pointer click", gameObject.name, data);
   }
 }
