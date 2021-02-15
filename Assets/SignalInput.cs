@@ -17,8 +17,8 @@ public class SignalInput : MonoBehaviour, IPointerClickHandler {
     return connectedOutput != null;
   }
 
-  public float GetValue() {
-    return connectedOutput != null ? connectedOutput.GetValue() * amount : 0;
+  public float GetValue(double sample) {
+    return connectedOutput != null ? connectedOutput.GetValue(sample) * amount : 0;
   }
 
   public void OnPointerClick(PointerEventData data) {

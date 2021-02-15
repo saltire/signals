@@ -1,3 +1,3 @@
 public interface ISignalNode {
-  float GetValue();
+  float GetValue(double sampleCount);
 }

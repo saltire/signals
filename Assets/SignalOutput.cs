@@ -13,8 +13,8 @@ public class SignalOutput : MonoBehaviour, IPointerClickHandler {
     cables = FindObjectOfType<CableManager>();
   }
 
-  public float GetValue() {
-    return parent.GetValue();
+  public float GetValue(double sample) {
+    return parent.GetValue(sample);
   }
 
   public void OnPointerClick(PointerEventData data) {
