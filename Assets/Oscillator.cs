@@ -43,13 +43,13 @@ public class Oscillator : MonoBehaviour, ISignalNode {
     volume = Mathf.Max(0, volume + speed * Time.deltaTime * volumeAdjustSensitivity);
   }
 
-  public float GetValue(double sample) {
+  public float GetValue(double sample, Stack<ISignalNode> nodes) {
     double sampleIncrement = sample - lastSample;
     lastSample = sample;
 
     double currentFrequency = frequency;
     if (frequencyAdjustInput.IsConnected()) {
-      currentFrequency += frequencyAdjustInput.GetValue(sample);
+      currentFrequency += frequencyAdjustInput.GetValue(sample, nodes);
     }
     double increment = sampleIncrement * currentFrequency / sampleFrequency;
 
@@ -71,7 +71,7 @@ public class Oscillator : MonoBehaviour, ISignalNode {
     }
 
     if (volumeAdjustInput.IsConnected()) {
-      value *= 1 + volumeAdjustInput.GetValue(sample);
+      value *= 1 + volumeAdjustInput.GetValue(sample, nodes);
     }
 
     return value * volume;

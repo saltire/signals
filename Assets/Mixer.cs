@@ -10,7 +10,7 @@ public class Mixer : MonoBehaviour, ISignalNode {
     inputs = GetComponentsInChildren<SignalInput>();
   }
 
-  public float GetValue(double sample) {
-    return inputs.Select(i => i.GetValue(sample)).Sum();
+  public float GetValue(double sample, Stack<ISignalNode> nodes) {
+    return inputs.Select(i => i.GetValue(sample, nodes)).Sum();
   }
 }
