@@ -10,7 +10,7 @@ public enum WaveType {
   Noise,
 };
 
-public class Oscillator : MonoBehaviour {
+public class Oscillator : MonoBehaviour, ISignalNode {
   const double TAU = Mathf.PI * 2.0;
 
   double phase;
@@ -41,18 +41,6 @@ public class Oscillator : MonoBehaviour {
 
   public void AdjustVolume(float speed) {
     volume = Mathf.Max(0, volume + speed * Time.deltaTime * volumeAdjustSensitivity);
-  }
-
-  void OnAudioFilterRead(float[] data, int channels) {
-    for (int i = 0; i < data.Length; i += channels) {
-      float value = GetValue();
-
-      data[i] += value * volume;
-
-      if (channels == 2) {
-        data[i + 1] = data[i];
-      }
-    }
   }
 
   public float GetValue() {

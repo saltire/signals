@@ -4,19 +4,17 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class SignalOutput : MonoBehaviour, IPointerClickHandler {
-  // Eventually will be able to map this to different values in its parent.
-  // For now just assume oscillator output.
-  Oscillator osc;
+  ISignalNode parent;
 
   CableManager cables;
 
   void Start() {
-    osc = GetComponentInParent<Oscillator>();
+    parent = GetComponentInParent<ISignalNode>();
     cables = FindObjectOfType<CableManager>();
   }
 
   public float GetValue() {
-    return osc.GetValue();
+    return parent.GetValue();
   }
 
   public void OnPointerClick(PointerEventData data) {
