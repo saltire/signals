@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -20,6 +21,14 @@ public class SignalOutput : MonoBehaviour, IPointerClickHandler {
     }
 
     return parent.GetValue(sample, nodes);
+  }
+
+  public float[] GetValues(double sample, int count, Stack<ISignalNode> nodes) {
+    if (nodes.Contains(parent)) {
+      return Enumerable.Repeat(0f, count).ToArray();
+    }
+
+    return parent.GetValues(sample, count, nodes);
   }
 
   public void OnPointerClick(PointerEventData data) {

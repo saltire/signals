@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 
@@ -75,5 +76,46 @@ public class Oscillator : MonoBehaviour, ISignalNode {
     }
 
     return value * volume;
+  }
+
+  public float[] GetValues(double sample, int count, Stack<ISignalNode> nodes) {
+    float[] values = new float[count];
+
+    float[] frequencyAdjustValues = frequencyAdjustInput.IsConnected() ?
+      frequencyAdjustInput.GetValues(sample, count, nodes) :
+      Enumerable.Repeat(0f, count).ToArray();
+    float[] volumeAdjustValues = volumeAdjustInput.IsConnected() ?
+      volumeAdjustInput.GetValues(sample, count, nodes) :
+      Enumerable.Repeat(0f, count).ToArray();
+
+    for (int i = 0; i < count; i++) {
+      double thisSample = sample + i;
+      double sampleIncrement = thisSample - lastSample;
+      lastSample = thisSample;
+
+      double currentFrequency = frequency + frequencyAdjustValues[i];
+      double increment = sampleIncrement * currentFrequency / sampleFrequency;
+
+      phase = (phase + increment) % 1;
+
+      float value = 0;
+
+      if (wave == WaveType.Sine) {
+        value = Mathf.Sin((float)(phase * TAU));
+      }
+      else if (wave == WaveType.Square) {
+        value = Mathf.Sign(Mathf.Sin((float)(phase * TAU)));
+      }
+      else if (wave == WaveType.Sawtooth) {
+        value = (float)(phase * 2 - 1);
+      }
+      else if (wave == WaveType.Noise) {
+        value = (float)rand.NextDouble() * 2 - 1;
+      }
+
+      values[i] = value * (1 + volumeAdjustValues[i]) * volume;
+    }
+
+    return values;
   }
 }

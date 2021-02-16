@@ -12,14 +12,16 @@ public class Speaker : MonoBehaviour {
   }
 
   void OnAudioFilterRead(float[] data, int channels) {
-    for (int i = 0; i < data.Length; i += channels) {
-      data[i] = input.GetValue(sample, new Stack<ISignalNode>());
+    int count = data.Length / channels;
 
-      if (channels == 2) {
-        data[i + 1] = data[i];
+    float[] values = input.GetValues(sample, count, new Stack<ISignalNode>());
+
+    for (int i = 0; i < count; i++) {
+      for (int c = 0; c < channels; c++) {
+        data[i * channels + c] = values[i];
       }
-
-      sample += 1;
     }
+
+    sample += count;
   }
 }
