@@ -21,16 +21,16 @@ public class SignalInput : MonoBehaviour, IPointerClickHandler {
     return connectedOutput != null;
   }
 
-  public float GetValue(double sample, Stack<ISignalNode> nodes) {
+  public double GetValue(double sample, Stack<ISignalNode> nodes) {
     nodes.Push(parent);
 
     return connectedOutput != null ? connectedOutput.GetValue(sample, nodes) * amount : 0;
   }
 
-  public float[] GetValues(double sample, int count, Stack<ISignalNode> nodes) {
+  public double[] GetValues(double sample, int count, Stack<ISignalNode> nodes) {
     nodes.Push(parent);
 
-    return connectedOutput == null ? new float[count] :
+    return connectedOutput == null ? Enumerable.Repeat(0d, count).ToArray() :
       connectedOutput.GetValues(sample, count, nodes).Select(v => v * amount).ToArray();
   }
 

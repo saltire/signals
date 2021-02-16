@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
 public interface ISignalNode {
-  float GetValue(double sample, Stack<ISignalNode> nodes);
-  float[] GetValues(double sample, int count, Stack<ISignalNode> nodes);
+  double GetValue(double sample, Stack<ISignalNode> nodes);
+  double[] GetValues(double sample, int count, Stack<ISignalNode> nodes);
 }

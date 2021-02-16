@@ -14,7 +14,7 @@ public class SignalOutput : MonoBehaviour, IPointerClickHandler {
     cables = FindObjectOfType<CableManager>();
   }
 
-  public float GetValue(double sample, Stack<ISignalNode> nodes) {
+  public double GetValue(double sample, Stack<ISignalNode> nodes) {
     // Return zero if the signal has already passed through this node, to avoid infinite loops.
     if (nodes.Contains(parent)) {
       return 0;
@@ -23,9 +23,9 @@ public class SignalOutput : MonoBehaviour, IPointerClickHandler {
     return parent.GetValue(sample, nodes);
   }
 
-  public float[] GetValues(double sample, int count, Stack<ISignalNode> nodes) {
+  public double[] GetValues(double sample, int count, Stack<ISignalNode> nodes) {
     if (nodes.Contains(parent)) {
-      return Enumerable.Repeat(0f, count).ToArray();
+      return Enumerable.Repeat(0d, count).ToArray();
     }
 
     return parent.GetValues(sample, count, nodes);

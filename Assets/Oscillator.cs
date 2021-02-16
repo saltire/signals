@@ -44,7 +44,7 @@ public class Oscillator : MonoBehaviour, ISignalNode {
     volume = Mathf.Max(0, volume + speed * Time.deltaTime * volumeAdjustSensitivity);
   }
 
-  public float GetValue(double sample, Stack<ISignalNode> nodes) {
+  public double GetValue(double sample, Stack<ISignalNode> nodes) {
     double sampleIncrement = sample - lastSample;
     lastSample = sample;
 
@@ -56,7 +56,7 @@ public class Oscillator : MonoBehaviour, ISignalNode {
 
     phase = (phase + increment) % 1;
 
-    float value = 0;
+    double value = 0;
 
     if (wave == WaveType.Sine) {
       value = Mathf.Sin((float)(phase * TAU));
@@ -65,10 +65,10 @@ public class Oscillator : MonoBehaviour, ISignalNode {
       value = Mathf.Sign(Mathf.Sin((float)(phase * TAU)));
     }
     else if (wave == WaveType.Sawtooth) {
-      value = (float)(phase * 2 - 1);
+      value = phase * 2 - 1;
     }
     else if (wave == WaveType.Noise) {
-      value = (float)rand.NextDouble() * 2 - 1;
+      value = rand.NextDouble() * 2 - 1;
     }
 
     if (volumeAdjustInput.IsConnected()) {
@@ -78,15 +78,15 @@ public class Oscillator : MonoBehaviour, ISignalNode {
     return value * volume;
   }
 
-  public float[] GetValues(double sample, int count, Stack<ISignalNode> nodes) {
-    float[] values = new float[count];
+  public double[] GetValues(double sample, int count, Stack<ISignalNode> nodes) {
+    double[] values = new double[count];
 
-    float[] frequencyAdjustValues = frequencyAdjustInput.IsConnected() ?
+    double[] frequencyAdjustValues = frequencyAdjustInput.IsConnected() ?
       frequencyAdjustInput.GetValues(sample, count, nodes) :
-      Enumerable.Repeat(0f, count).ToArray();
-    float[] volumeAdjustValues = volumeAdjustInput.IsConnected() ?
+      Enumerable.Repeat(0d, count).ToArray();
+    double[] volumeAdjustValues = volumeAdjustInput.IsConnected() ?
       volumeAdjustInput.GetValues(sample, count, nodes) :
-      Enumerable.Repeat(0f, count).ToArray();
+      Enumerable.Repeat(0d, count).ToArray();
 
     for (int i = 0; i < count; i++) {
       double thisSample = sample + i;
@@ -98,7 +98,7 @@ public class Oscillator : MonoBehaviour, ISignalNode {
 
       phase = (phase + increment) % 1;
 
-      float value = 0;
+      double value = 0;
 
       if (wave == WaveType.Sine) {
         value = Mathf.Sin((float)(phase * TAU));
@@ -107,10 +107,10 @@ public class Oscillator : MonoBehaviour, ISignalNode {
         value = Mathf.Sign(Mathf.Sin((float)(phase * TAU)));
       }
       else if (wave == WaveType.Sawtooth) {
-        value = (float)(phase * 2 - 1);
+        value = phase * 2 - 1;
       }
       else if (wave == WaveType.Noise) {
-        value = (float)rand.NextDouble() * 2 - 1;
+        value = rand.NextDouble() * 2 - 1;
       }
 
       values[i] = value * (1 + volumeAdjustValues[i]) * volume;
