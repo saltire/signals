@@ -47,7 +47,7 @@ public class Filter : MonoBehaviour, ISignalNode {
       if (type == FilterType.LowPass) {
         filter.SetLowPassFilter(sampleRate, cutoff, q);
       }
-      else if (type == FilterType.LowPass) {
+      else if (type == FilterType.HighPass) {
         filter.SetHighPassFilter(sampleRate, cutoff, q);
       }
     }

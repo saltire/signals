@@ -1166,16 +1166,6 @@ PrefabInstance:
       propertyPath: q
       value: 0.5
       objectReference: {fileID: 0}
-    - target: {fileID: 4116271851502779102, guid: 557586aaefbc15c439d95983ceaac238,
-        type: 3}
-      propertyPath: type
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4116271851502779102, guid: 557586aaefbc15c439d95983ceaac238,
-        type: 3}
-      propertyPath: cutoff
-      value: 8000
-      objectReference: {fileID: 0}
     - target: {fileID: 9010105933851250537, guid: 557586aaefbc15c439d95983ceaac238,
         type: 3}
       propertyPath: connectedOutput
