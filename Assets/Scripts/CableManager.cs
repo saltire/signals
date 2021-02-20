@@ -9,6 +9,12 @@ class Cable {
   public LineRenderer line;
 }
 
+public enum Holding {
+  None,
+  Input,
+  Output,
+}
+
 public class CableManager : MonoBehaviour {
   public LineRenderer cablePrefab;
   public float cableWidth = .1f;
@@ -66,13 +72,17 @@ public class CableManager : MonoBehaviour {
     }
   }
 
+  public Holding GetHoldingState() {
+    return heldCable == null ? Holding.None :
+      (heldCable?.input == null ? Holding.Input : Holding.Output);
+  }
+
   public void OnInputClick(SignalInput input) {
     Cable cable = cables.Find(c => c.input == input);
-    bool holdingCable = heldCable != null;
-    bool heldHasInput = heldCable?.input != null;
+    Holding holding = GetHoldingState();
     bool inputHasCable = cable != null;
 
-    if (holdingCable && !heldHasInput && !inputHasCable) {
+    if (holding == Holding.Input && !inputHasCable) {
       // Connect the held cable to the input.
       heldCable.input = input;
       heldCable.input.connectedOutput = heldCable.output;
@@ -81,12 +91,12 @@ public class CableManager : MonoBehaviour {
 
       heldCable = null;
     }
-    else if (holdingCable && heldHasInput && heldCable.input == input) {
+    else if (holding == Holding.Output && heldCable.input == input) {
       // Destroy the held cable.
       Destroy(heldCable.line.gameObject);
       heldCable = null;
     }
-    else if (!holdingCable && !inputHasCable) {
+    else if (holding == Holding.None && !inputHasCable) {
       // Create a cable connected to the input and hold it.
       LineRenderer line = Instantiate(cablePrefab);
       line.transform.parent = transform;
@@ -95,7 +105,7 @@ public class CableManager : MonoBehaviour {
       heldCable = new Cable() { input = input, line = line };
       UpdateCurrentCableLine();
     }
-    else if (!holdingCable && inputHasCable) {
+    else if (holding == Holding.None && inputHasCable) {
       // Disconnect the cable from the input and hold it.
       cable.input.connectedOutput = null;
 
@@ -109,11 +119,10 @@ public class CableManager : MonoBehaviour {
 
   public void OnOutputClick(SignalOutput output) {
     Cable cable = cables.Find(c => c.output == output);
-    bool holdingCable = heldCable != null;
-    bool heldHasOutput = heldCable?.output != null;
+    Holding holding = GetHoldingState();
     bool outputHasCable = cable != null;
 
-    if (holdingCable && !heldHasOutput && !outputHasCable) {
+    if (holding == Holding.Output && !outputHasCable) {
       // Connect the held cable to the output.
       heldCable.output = output;
       heldCable.input.connectedOutput = heldCable.output;
@@ -122,12 +131,12 @@ public class CableManager : MonoBehaviour {
 
       heldCable = null;
     }
-    else if (holdingCable && heldHasOutput && heldCable.output == output) {
+    else if (holding == Holding.Input && heldCable.output == output) {
       // Destroy the held cable.
       Destroy(heldCable.line.gameObject);
       heldCable = null;
     }
-    else if (!holdingCable && !outputHasCable) {
+    else if (holding == Holding.None && !outputHasCable) {
       // Create a cable connected to the output and hold it.
       LineRenderer line = Instantiate(cablePrefab);
       line.transform.parent = transform;
@@ -136,7 +145,7 @@ public class CableManager : MonoBehaviour {
       heldCable = new Cable() { line = line, output = output };
       UpdateCurrentCableLine();
     }
-    else if (!holdingCable && outputHasCable) {
+    else if (holding == Holding.None && outputHasCable) {
       // Disconnect the cable from the output and hold it.
       cable.input.connectedOutput = null;
 
