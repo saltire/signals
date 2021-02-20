@@ -11,5 +11,9 @@ public class CableManagerInit : Editor {
     if (GUILayout.Button("Place Cables")) {
       cables.InitCables();
     }
+
+    if (GUILayout.Button("Clear Cables")) {
+      cables.ClearCables();
+    }
   }
 }

@@ -21,13 +21,19 @@ public class CableManager : MonoBehaviour {
 
   void Start() {
     mainCamera = FindObjectOfType<Camera>();
+
+    InitCables();
   }
 
-  public void InitCables() {
+  public void ClearCables() {
     cables.Clear();
     foreach (LineRenderer line in GetComponentsInChildren<LineRenderer>()) {
       DestroyImmediate(line.gameObject);
     }
+  }
+
+  public void InitCables() {
+    ClearCables();
 
     foreach (SignalInput input in FindObjectsOfType<SignalInput>()) {
       if (input.IsConnected()) {
