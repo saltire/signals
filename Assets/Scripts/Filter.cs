@@ -54,12 +54,10 @@ public class Filter : MonoBehaviour, ISignalNode {
   }
 
   public double GetValue(double sample, Stack<ISignalNode> nodes) {
-    // return filter.ProcessSample(input.GetValue(sample, nodes));
     return filter.Transform((float)input.GetValue(sample, nodes));
   }
 
   public double[] GetValues(double sample, int count, Stack<ISignalNode> nodes) {
-    // return filter.ProcessSamples(input.GetValues(sample, count, nodes));
     return input.GetValues(sample, count, nodes)
       .Select(s => (double)filter.Transform((float)s)).ToArray();
   }
