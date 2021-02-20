@@ -1504,6 +1504,7 @@ MonoBehaviour:
     type: 3}
   cableWidth: 0.1
   cableColliderWidth: 0.3
+  cableHoldY: 3
 --- !u!4 &1912822627
 Transform:
   m_ObjectHideFlags: 0

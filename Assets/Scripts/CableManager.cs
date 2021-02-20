@@ -19,6 +19,8 @@ public class CableManager : MonoBehaviour {
   public LineRenderer cablePrefab;
   public float cableWidth = .1f;
   public float cableColliderWidth = .3f;
+  public float cableHoldY = 3;
+  Plane cableHoldPlane;
 
   Camera mainCamera;
 
@@ -27,6 +29,7 @@ public class CableManager : MonoBehaviour {
 
   void Start() {
     mainCamera = FindObjectOfType<Camera>();
+    cableHoldPlane = new Plane(Vector3.down, Vector3.up * cableHoldY);
 
     InitCables();
   }
@@ -64,10 +67,14 @@ public class CableManager : MonoBehaviour {
 
   void UpdateCurrentCableLine() {
     if (heldCable != null) {
-      Vector3 mousePosition = mainCamera.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+      Ray mouseRay = mainCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
+      float distance;
+      cableHoldPlane.Raycast(mouseRay, out distance);
+      Vector3 holdPosition = mouseRay.GetPoint(distance);
+
       heldCable.line.SetPositions(new[] {
-        heldCable.input != null ? heldCable.input.transform.position : mousePosition,
-        heldCable.output != null ? heldCable.output.transform.position : mousePosition,
+        heldCable.input != null ? heldCable.input.transform.position : holdPosition,
+        heldCable.output != null ? heldCable.output.transform.position : holdPosition,
       });
     }
   }
@@ -77,83 +84,67 @@ public class CableManager : MonoBehaviour {
       (heldCable?.input == null ? Holding.Input : Holding.Output);
   }
 
-  public void OnInputClick(SignalInput input) {
-    Cable cable = cables.Find(c => c.input == input);
+  public void OnPortClick(SignalPort port) {
+    bool portIsInput = port.GetType() == typeof(SignalInput);
+    Cable connectedCable = cables
+      .Find(c => portIsInput ? port == c.input : port == c.output);
+    bool portHasCable = connectedCable != null;
     Holding holding = GetHoldingState();
-    bool inputHasCable = cable != null;
 
-    if (holding == Holding.Input && !inputHasCable) {
-      // Connect the held cable to the input.
-      heldCable.input = input;
+    if (holding == Holding.None) {
+      if (!portHasCable) {
+        // Create a cable connected to the port and hold it.
+        LineRenderer line = Instantiate(cablePrefab);
+        line.transform.parent = transform;
+        line.widthMultiplier = cableWidth;
+
+        heldCable = new Cable() {
+          input = portIsInput ? (SignalInput)port : null,
+          output = portIsInput ? null : (SignalOutput)port,
+          line = line,
+        };
+        UpdateCurrentCableLine();
+      }
+      else {
+        // Disconnect the cable from the port and hold it.
+        connectedCable.input.connectedOutput = null;
+
+        if (portIsInput) {
+          connectedCable.input = null;
+        }
+        else {
+          connectedCable.output = null;
+        }
+        // cables.Remove(connectedCable);
+
+        heldCable = connectedCable;
+        UpdateCurrentCableLine();
+      }
+    }
+    else if (!portHasCable && holding == (portIsInput ? Holding.Input : Holding.Output)) {
+      // Connect the held cable to the port and stop holding it.
+      if (portIsInput) {
+        heldCable.input = (SignalInput)port;
+      }
+      else {
+        heldCable.output = (SignalOutput)port;
+      }
+
       heldCable.input.connectedOutput = heldCable.output;
-      heldCable.line.SetPositions(new[] { heldCable.input.transform.position, heldCable.output.transform.position });
+      heldCable.line.SetPositions(new[] {
+        heldCable.input.transform.position,
+        heldCable.output.transform.position,
+      });
       cables.Add(heldCable);
 
       heldCable = null;
     }
-    else if (holding == Holding.Output && heldCable.input == input) {
+    else if ((holding == Holding.Input && port == heldCable.output) ||
+      (holding == Holding.Output && port == heldCable.input)) {
       // Destroy the held cable.
+      cables.Remove(heldCable);
       Destroy(heldCable.line.gameObject);
       heldCable = null;
-    }
-    else if (holding == Holding.None && !inputHasCable) {
-      // Create a cable connected to the input and hold it.
-      LineRenderer line = Instantiate(cablePrefab);
-      line.transform.parent = transform;
-      line.widthMultiplier = cableWidth;
-
-      heldCable = new Cable() { input = input, line = line };
-      UpdateCurrentCableLine();
-    }
-    else if (holding == Holding.None && inputHasCable) {
-      // Disconnect the cable from the input and hold it.
-      cable.input.connectedOutput = null;
-
-      cable.input = null;
-      cables.Remove(cable);
-
-      heldCable = cable;
-      UpdateCurrentCableLine();
-    }
-  }
-
-  public void OnOutputClick(SignalOutput output) {
-    Cable cable = cables.Find(c => c.output == output);
-    Holding holding = GetHoldingState();
-    bool outputHasCable = cable != null;
-
-    if (holding == Holding.Output && !outputHasCable) {
-      // Connect the held cable to the output.
-      heldCable.output = output;
-      heldCable.input.connectedOutput = heldCable.output;
-      heldCable.line.SetPositions(new[] { heldCable.input.transform.position, heldCable.output.transform.position });
-      cables.Add(heldCable);
-
-      heldCable = null;
-    }
-    else if (holding == Holding.Input && heldCable.output == output) {
-      // Destroy the held cable.
-      Destroy(heldCable.line.gameObject);
-      heldCable = null;
-    }
-    else if (holding == Holding.None && !outputHasCable) {
-      // Create a cable connected to the output and hold it.
-      LineRenderer line = Instantiate(cablePrefab);
-      line.transform.parent = transform;
-      line.widthMultiplier = cableWidth;
-
-      heldCable = new Cable() { line = line, output = output };
-      UpdateCurrentCableLine();
-    }
-    else if (holding == Holding.None && outputHasCable) {
-      // Disconnect the cable from the output and hold it.
-      cable.input.connectedOutput = null;
-
-      cable.output = null;
-      cables.Remove(cable);
-
-      heldCable = cable;
-      UpdateCurrentCableLine();
     }
   }
 }

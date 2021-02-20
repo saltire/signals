@@ -4,18 +4,9 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class SignalInput : MonoBehaviour, IPointerClickHandler {
-  ISignalNode parent;
-
+public class SignalInput : SignalPort {
   public SignalOutput connectedOutput;
   public float amount = 0;
-
-  CableManager cables;
-
-  void Start() {
-    parent = GetComponentInParent<ISignalNode>();
-    cables = FindObjectOfType<CableManager>();
-  }
 
   public bool IsConnected() {
     return connectedOutput != null;
@@ -32,9 +23,5 @@ public class SignalInput : MonoBehaviour, IPointerClickHandler {
 
     return connectedOutput == null ? Enumerable.Repeat(0d, count).ToArray() :
       connectedOutput.GetValues(sample, count, nodes).Select(v => v * amount).ToArray();
-  }
-
-  public void OnPointerClick(PointerEventData data) {
-    cables.OnInputClick(this);
   }
 }
