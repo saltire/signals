@@ -7,8 +7,12 @@ public class Oscilloscope : MonoBehaviour, ISignalNode {
   SignalInput input;
   LineRenderer line;
 
-  public Vector2 scale = Vector2.one;
-  double[] values = new double[] { 0, 0 };
+  Queue<double> queue = new Queue<double>();
+
+  [Range(128, 2048)]
+  public int windowSize = 1024;
+  [Range(0, 1024)]
+  public int phaseShift = 0;
 
   void Start() {
     input = GetComponentInChildren<SignalInput>();
@@ -18,14 +22,26 @@ public class Oscilloscope : MonoBehaviour, ISignalNode {
   }
 
   void Update() {
-    Vector3 startPos = line.transform.position + line.transform.rotation * Vector3.left * scale.x / 2;
+    int length = phaseShift + windowSize;
+    while (queue.Count >= length) {
+      Vector2 scale = line.transform.localScale;
+      Vector3[] positions = new Vector3[windowSize];
+      Vector3 startPos = line.transform.position +
+        line.transform.rotation * Vector3.left * scale.x / 2;
+      float unitWidth = scale.x / Mathf.Max(1, windowSize - 1);
 
-    float unitWidth = scale.x / Mathf.Max(1, values.Length - 1);
-
-    line.positionCount = values.Length;
-    line.SetPositions(values
-      .Select((v, i) => startPos + line.transform.rotation * new Vector3(i * unitWidth, (float)v * scale.y, -.1f))
-      .ToArray());
+      for (int i = 0; i < length; i++) {
+        double value = queue.Dequeue();
+        if (i >= phaseShift) {
+          int p = i - phaseShift;
+          positions[p] = startPos +
+            line.transform.rotation *
+            new Vector3(p * unitWidth, Mathf.Clamp((float)value, -1, 1) * scale.y / 2, -.1f);
+        }
+      }
+      line.positionCount = positions.Length;
+      line.SetPositions(positions);
+    }
   }
 
   public double GetValue(double sample, Stack<ISignalNode> nodes) {
@@ -33,7 +49,10 @@ public class Oscilloscope : MonoBehaviour, ISignalNode {
   }
 
   public double[] GetValues(double sample, int count, Stack<ISignalNode> nodes) {
-    values = input.GetValues(sample, count, nodes);
+    double[] values = input.GetValues(sample, count, nodes);
+    foreach (double value in values) {
+      queue.Enqueue(value);
+    }
     return values;
   }
 }
