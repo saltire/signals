@@ -15,6 +15,7 @@ public enum Holding {
   Output,
 }
 
+[ExecuteAlways]
 public class CableManager : MonoBehaviour {
   public LineRenderer cablePrefab;
   public float cableWidth = .1f;
@@ -27,23 +28,17 @@ public class CableManager : MonoBehaviour {
   Cable heldCable;
   List<Cable> cables = new List<Cable>();
 
-  void Start() {
+  void Awake() {
     mainCamera = FindObjectOfType<Camera>();
     cableHoldPlane = new Plane(Vector3.down, Vector3.up * cableHoldY);
 
     InitCables();
   }
 
-  public void ClearCables() {
-    cables.Clear();
-    foreach (LineRenderer line in GetComponentsInChildren<LineRenderer>()) {
-      DestroyImmediate(line.gameObject);
-    }
-  }
-
   public void InitCables() {
     ClearCables();
 
+    // Create cable lines for all existing input-output connections.
     foreach (SignalInput input in FindObjectsOfType<SignalInput>()) {
       if (input.IsConnected()) {
         LineRenderer line = Instantiate(cablePrefab);
@@ -61,21 +56,33 @@ public class CableManager : MonoBehaviour {
     }
   }
 
-  void Update() {
-    UpdateCurrentCableLine();
+  public void ClearCables() {
+    cables.Clear();
+    foreach (LineRenderer line in GetComponentsInChildren<LineRenderer>()) {
+      DestroyImmediate(line.gameObject);
+    }
   }
 
-  void UpdateCurrentCableLine() {
-    if (heldCable != null) {
-      Ray mouseRay = mainCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
-      float distance;
-      cableHoldPlane.Raycast(mouseRay, out distance);
-      Vector3 holdPosition = mouseRay.GetPoint(distance);
+  void Update() {
+    // Redraw all the cable lines.
+    foreach (Cable cable in cables) {
+      if (cable == heldCable) {
+        Ray mouseRay = mainCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
+        float distance;
+        cableHoldPlane.Raycast(mouseRay, out distance);
+        Vector3 holdPosition = mouseRay.GetPoint(distance);
 
-      heldCable.line.SetPositions(new[] {
-        heldCable.input != null ? heldCable.input.transform.position : holdPosition,
-        heldCable.output != null ? heldCable.output.transform.position : holdPosition,
-      });
+        heldCable.line.SetPositions(new[] {
+          heldCable.input != null ? heldCable.input.transform.position : holdPosition,
+          heldCable.output != null ? heldCable.output.transform.position : holdPosition,
+        });
+      }
+      else {
+        cable.line.SetPositions(new[] {
+          cable.input.transform.position,
+          cable.output.transform.position,
+        });
+      }
     }
   }
 
@@ -103,7 +110,6 @@ public class CableManager : MonoBehaviour {
           output = portIsInput ? null : (SignalOutput)port,
           line = line,
         };
-        UpdateCurrentCableLine();
       }
       else {
         // Disconnect the cable from the port and hold it.
@@ -115,10 +121,8 @@ public class CableManager : MonoBehaviour {
         else {
           connectedCable.output = null;
         }
-        // cables.Remove(connectedCable);
 
         heldCable = connectedCable;
-        UpdateCurrentCableLine();
       }
     }
     else if (!portHasCable && holding == (portIsInput ? Holding.Input : Holding.Output)) {

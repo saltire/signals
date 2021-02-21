@@ -12,7 +12,7 @@ public abstract class SignalPort : MonoBehaviour, IPointerClickHandler {
   protected ISignalNode parent;
   protected CableManager cables;
 
-  void Start() {
+  void Awake() {
     parent = GetComponentInParent<ISignalNode>();
     cables = FindObjectOfType<CableManager>();
   }
