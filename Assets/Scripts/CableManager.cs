@@ -106,6 +106,7 @@ public class CableManager : MonoBehaviour {
           output = portIsInput ? null : (SignalOutput)port,
           line = line,
         };
+        cables.Add(heldCable);
       }
       else {
         // Disconnect the cable from the port and hold it.
@@ -135,7 +136,6 @@ public class CableManager : MonoBehaviour {
         heldCable.input.transform.position,
         heldCable.output.transform.position,
       });
-      cables.Add(heldCable);
 
       heldCable = null;
     }
