@@ -5,18 +5,17 @@ using UnityEngine;
 
 public class Mixer : MonoBehaviour, ISignalNode {
   SignalInput[] inputs;
+  Knob fader;
 
-  [Range(1, 2)]
-  public float fader = 1.5f;
-
-  void Start() {
+  void Awake() {
     inputs = GetComponentsInChildren<SignalInput>();
+    fader = GetComponentInChildren<Knob>();
   }
 
   float[] GetMultipliers() {
     return new float[] {
-      Mathf.Min((2 - fader) * 2, 1),
-      Mathf.Min((fader - 1) * 2, 1),
+      Mathf.Min((2 - fader.value) * 2, 1),
+      Mathf.Min((fader.value - 1) * 2, 1),
     };
   }
 

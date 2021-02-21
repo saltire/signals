@@ -4,19 +4,18 @@ using UnityEngine;
 
 public class Speaker : MonoBehaviour {
   SignalInput input;
-
-  [Range(0, 10)]
-  public float volume = 1;
+  Knob volume;
 
   double sample = 0;
 
-  void Start() {
+  void Awake() {
     input = GetComponentInChildren<SignalInput>();
+    volume = GetComponentInChildren<Knob>();
   }
 
   void OnAudioFilterRead(float[] data, int channels) {
     int count = data.Length / channels;
-    float volumeMultiplier = volume / 10;
+    float volumeMultiplier = volume.value / 10;
 
     double[] values = input.GetValues(sample, count, new Stack<ISignalNode>());
 

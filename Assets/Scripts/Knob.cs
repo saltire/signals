@@ -14,8 +14,18 @@ public class Knob : MonoBehaviour, IBeginDragHandler, IDragHandler {
   Vector3 beginDragPosition;
   float beginDragValue;
 
+  float minAngle = -45;
+  float maxAngle = 215;
+
   void Awake() {
     cameraUtil = FindObjectOfType<CameraUtil>();
+
+    Rotate();
+  }
+
+  void Rotate() {
+    float val = Mathf.InverseLerp(min, max, value);
+    transform.rotation = Quaternion.Euler(0, Mathf.Lerp(minAngle, maxAngle, val), 0);
   }
 
   public void OnBeginDrag(PointerEventData data) {
@@ -27,5 +37,6 @@ public class Knob : MonoBehaviour, IBeginDragHandler, IDragHandler {
     Vector3 dragPosition = cameraUtil.MousePositionOnPlane(data.position, transform.position.y);
     float deltaValue = (dragPosition.x - beginDragPosition.x) * sensitivity;
     value = Mathf.Clamp(beginDragValue + deltaValue, min, max);
+    Rotate();
   }
 }

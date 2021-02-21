@@ -10,8 +10,9 @@ public enum FilterType {
 }
 
 public class Filter : MonoBehaviour, ISignalNode {
-  [Range(1, 22000)]
-  public float cutoff = 400;
+  SignalInput input;
+  Knob cutoffKnob;
+
   float lastCutoff;
 
   float q = 1;
@@ -23,13 +24,15 @@ public class Filter : MonoBehaviour, ISignalNode {
 
   BiQuadFilter filter;
 
-  SignalInput input;
 
-  void Start() {
+  void Awake() {
     input = GetComponentInChildren<SignalInput>();
+    cutoffKnob = GetComponentInChildren<Knob>();
+
+    float cutoff = cutoffKnob.value;
 
     lastType = type;
-    lastCutoff = cutoff = Mathf.Max(1, cutoff);
+    lastCutoff = cutoff;
 
     if (type == FilterType.LowPass) {
       filter = BiQuadFilter.LowPassFilter(sampleRate, cutoff, q);
@@ -40,9 +43,11 @@ public class Filter : MonoBehaviour, ISignalNode {
   }
 
   void Update() {
+    float cutoff = cutoffKnob.value;
+
     if (type != lastType || cutoff != lastCutoff) {
       lastType = type;
-      lastCutoff = cutoff = Mathf.Max(1, cutoff);
+      lastCutoff = cutoff;
 
       if (type == FilterType.LowPass) {
         filter.SetLowPassFilter(sampleRate, cutoff, q);
