@@ -19,14 +19,14 @@ public class PlayerControl : MonoBehaviour {
     if (gamepad != null) {
       transform.Translate(gamepad.leftStick.ReadValue() * Time.deltaTime * speed);
 
-      if (osc != null) {
-        if (gamepad.leftTrigger.isPressed) {
-          osc.AdjustFrequency(gamepad.rightStick.ReadValue().y);
-        }
-        if (gamepad.rightTrigger.isPressed) {
-          osc.AdjustVolume(gamepad.rightStick.ReadValue().y);
-        }
-      }
+      // if (osc != null) {
+      //   if (gamepad.leftTrigger.isPressed) {
+      //     osc.AdjustFrequency(gamepad.rightStick.ReadValue().y);
+      //   }
+      //   if (gamepad.rightTrigger.isPressed) {
+      //     osc.AdjustVolume(gamepad.rightStick.ReadValue().y);
+      //   }
+      // }
     }
   }
 

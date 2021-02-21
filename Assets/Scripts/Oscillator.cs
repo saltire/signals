@@ -18,9 +18,6 @@ public class Oscillator : MonoBehaviour, ISignalNode {
   double lastSample = 0;
   double sampleFrequency = 48000;
 
-  public double frequency = 440;
-  public float frequencyAdjustSensitivity = 1;
-
   public float volume = 0.1f;
   public float volumeAdjustSensitivity = .1f;
 
@@ -28,6 +25,7 @@ public class Oscillator : MonoBehaviour, ISignalNode {
 
   public SignalInput frequencyAdjustInput;
   public SignalInput volumeAdjustInput;
+  public Knob frequencyKnob;
 
   System.Random rand;
 
@@ -35,20 +33,20 @@ public class Oscillator : MonoBehaviour, ISignalNode {
     rand = new System.Random();
   }
 
-  public void AdjustFrequency(float speed) {
-    // TODO: rounding options; exponentially increase speed; accelerate speed over time
-    frequency = Mathf.Max(0, (float)frequency + speed * Time.deltaTime * frequencyAdjustSensitivity);
-  }
+  // public void AdjustFrequency(float speed) {
+  //   // TODO: rounding options; exponentially increase speed; accelerate speed over time
+  //   frequency = Mathf.Max(0, (float)frequency + speed * Time.deltaTime * frequencyAdjustSensitivity);
+  // }
 
-  public void AdjustVolume(float speed) {
-    volume = Mathf.Max(0, volume + speed * Time.deltaTime * volumeAdjustSensitivity);
-  }
+  // public void AdjustVolume(float speed) {
+  //   volume = Mathf.Max(0, volume + speed * Time.deltaTime * volumeAdjustSensitivity);
+  // }
 
   public double GetValue(double sample, Stack<ISignalNode> nodes) {
     double sampleIncrement = sample - lastSample;
     lastSample = sample;
 
-    double currentFrequency = frequency;
+    double currentFrequency = frequencyKnob.value;
     if (frequencyAdjustInput.IsConnected()) {
       currentFrequency += frequencyAdjustInput.GetValue(sample, nodes);
     }
@@ -87,6 +85,8 @@ public class Oscillator : MonoBehaviour, ISignalNode {
     double[] volumeAdjustValues = volumeAdjustInput.IsConnected() ?
       volumeAdjustInput.GetValues(sample, count, nodes) :
       Enumerable.Repeat(0d, count).ToArray();
+
+    float frequency = frequencyKnob.value;
 
     for (int i = 0; i < count; i++) {
       double thisSample = sample + i;

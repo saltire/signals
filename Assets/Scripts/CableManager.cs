@@ -21,16 +21,14 @@ public class CableManager : MonoBehaviour {
   public float cableWidth = .1f;
   public float cableColliderWidth = .3f;
   public float cableHoldY = 3;
-  Plane cableHoldPlane;
 
-  Camera mainCamera;
+  CameraUtil cameraUtil;
 
   Cable heldCable;
   List<Cable> cables = new List<Cable>();
 
   void Awake() {
-    mainCamera = FindObjectOfType<Camera>();
-    cableHoldPlane = new Plane(Vector3.down, Vector3.up * cableHoldY);
+    cameraUtil = FindObjectOfType<CameraUtil>();
 
     InitCables();
   }
@@ -67,10 +65,8 @@ public class CableManager : MonoBehaviour {
     // Redraw all the cable lines.
     foreach (Cable cable in cables) {
       if (cable == heldCable) {
-        Ray mouseRay = mainCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
-        float distance;
-        cableHoldPlane.Raycast(mouseRay, out distance);
-        Vector3 holdPosition = mouseRay.GetPoint(distance);
+        Vector3 holdPosition = cameraUtil.MousePositionOnPlane(
+          Mouse.current.position.ReadValue(), cableHoldY);
 
         heldCable.line.SetPositions(new[] {
           heldCable.input != null ? heldCable.input.transform.position : holdPosition,
