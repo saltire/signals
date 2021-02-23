@@ -9,11 +9,11 @@ public enum PortType {
 public abstract class SignalPort : MonoBehaviour, IPointerClickHandler {
   public PortType type;
 
-  protected ISignalNode parent;
+  protected SignalNode parent;
   protected CableManager cables;
 
   void Awake() {
-    parent = GetComponentInParent<ISignalNode>();
+    parent = GetComponentInParent<SignalNode>();
     cables = FindObjectOfType<CableManager>();
   }
 

@@ -11,26 +11,43 @@ public enum WaveType {
   Noise,
 };
 
-public class Oscillator : MonoBehaviour, ISignalNode {
-  const double TAU = Mathf.PI * 2.0;
+public class Oscillator : SignalNode {
+  public SignalInput frequencyAdjustInput;
+  public SignalInput volumeAdjustInput;
+  public Knob frequencyKnob;
+  public Button sineButton;
+  public Button squareButton;
+  public Button sawtoothButton;
+  public Button noiseButton;
+  Button[] buttons;
+
+  public float volume = 1;
+  // public float volumeAdjustSensitivity = .1f;
+
+  public WaveType wave = WaveType.Sine;
 
   double phase;
   double lastSample = 0;
   double sampleFrequency = 48000;
-
-  public float volume = 0.1f;
-  public float volumeAdjustSensitivity = .1f;
-
-  public WaveType wave = WaveType.Sine;
-
-  public SignalInput frequencyAdjustInput;
-  public SignalInput volumeAdjustInput;
-  public Knob frequencyKnob;
+  const double TAU = Mathf.PI * 2.0;
 
   System.Random rand;
 
   void Awake() {
     rand = new System.Random();
+
+    if (wave == WaveType.Sine) {
+      sineButton.SetGlow(true);
+    }
+    else if (wave == WaveType.Square) {
+      squareButton.SetGlow(true);
+    }
+    else if (wave == WaveType.Sawtooth) {
+      sawtoothButton.SetGlow(true);
+    }
+    else if (wave == WaveType.Noise) {
+      noiseButton.SetGlow(true);
+    }
   }
 
   // public void AdjustFrequency(float speed) {
@@ -42,7 +59,29 @@ public class Oscillator : MonoBehaviour, ISignalNode {
   //   volume = Mathf.Max(0, volume + speed * Time.deltaTime * volumeAdjustSensitivity);
   // }
 
-  public double GetValue(double sample, Stack<ISignalNode> nodes) {
+  public override void OnButtonClick(Button button) {
+    sineButton.SetGlow(false);
+    squareButton.SetGlow(false);
+    sawtoothButton.SetGlow(false);
+    noiseButton.SetGlow(false);
+
+    button.SetGlow(true);
+
+    if (button == sineButton) {
+      wave = WaveType.Sine;
+    }
+    else if (button == squareButton) {
+      wave = WaveType.Square;
+    }
+    else if (button == sawtoothButton) {
+      wave = WaveType.Sawtooth;
+    }
+    else if (button == noiseButton) {
+      wave = WaveType.Noise;
+    }
+  }
+
+  public override double GetValue(double sample, Stack<SignalNode> nodes) {
     double sampleIncrement = sample - lastSample;
     lastSample = sample;
 
@@ -76,7 +115,7 @@ public class Oscillator : MonoBehaviour, ISignalNode {
     return value * volume;
   }
 
-  public double[] GetValues(double sample, int count, Stack<ISignalNode> nodes) {
+  public override double[] GetValues(double sample, int count, Stack<SignalNode> nodes) {
     double[] values = new double[count];
 
     double[] frequencyAdjustValues = frequencyAdjustInput.IsConnected() ?

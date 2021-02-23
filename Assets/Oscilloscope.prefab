@@ -230,7 +230,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a5152943ccf1c6f4798ef82a762b7b28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scale: {x: 2.5, y: 1.5}
+  yScale: 0.25
+  windowSize: 1024
+  phaseShift: 0
 --- !u!1001 &8271200239949832614
 PrefabInstance:
   m_ObjectHideFlags: 0

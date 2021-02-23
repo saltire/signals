@@ -9,21 +9,22 @@ public enum FilterType {
   HighPass,
 }
 
-public class Filter : MonoBehaviour, ISignalNode {
+public class Filter : SignalNode {
   SignalInput input;
   Knob cutoffKnob;
-
-  float lastCutoff;
-
-  float q = 1;
+  public Button lowPassButton;
+  public Button highPassButton;
 
   public FilterType type;
+
+  float lastCutoff;
   FilterType lastType;
+
+  float q = 1;
 
   float sampleRate = 48000;
 
   BiQuadFilter filter;
-
 
   void Awake() {
     input = GetComponentInChildren<SignalInput>();
@@ -36,9 +37,11 @@ public class Filter : MonoBehaviour, ISignalNode {
 
     if (type == FilterType.LowPass) {
       filter = BiQuadFilter.LowPassFilter(sampleRate, cutoff, q);
+      lowPassButton.SetGlow(true);
     }
     else if (type == FilterType.HighPass) {
       filter = BiQuadFilter.HighPassFilter(sampleRate, cutoff, q);
+      highPassButton.SetGlow(true);
     }
   }
 
@@ -51,18 +54,31 @@ public class Filter : MonoBehaviour, ISignalNode {
 
       if (type == FilterType.LowPass) {
         filter.SetLowPassFilter(sampleRate, cutoff, q);
+        lowPassButton.SetGlow(true);
+        highPassButton.SetGlow(false);
       }
       else if (type == FilterType.HighPass) {
         filter.SetHighPassFilter(sampleRate, cutoff, q);
+        highPassButton.SetGlow(true);
+        lowPassButton.SetGlow(false);
       }
     }
   }
 
-  public double GetValue(double sample, Stack<ISignalNode> nodes) {
+  public override void OnButtonClick(Button button) {
+    if (button == lowPassButton) {
+      type = FilterType.LowPass;
+    }
+    else if (button == highPassButton) {
+      type = FilterType.HighPass;
+    }
+  }
+
+  public override double GetValue(double sample, Stack<SignalNode> nodes) {
     return filter.Transform((float)input.GetValue(sample, nodes));
   }
 
-  public double[] GetValues(double sample, int count, Stack<ISignalNode> nodes) {
+  public override double[] GetValues(double sample, int count, Stack<SignalNode> nodes) {
     return input.GetValues(sample, count, nodes)
       .Select(s => (double)filter.Transform((float)s)).ToArray();
   }

@@ -17,7 +17,7 @@ public class Speaker : MonoBehaviour {
     int count = data.Length / channels;
     float volumeMultiplier = volume.value / 10;
 
-    double[] values = input.GetValues(sample, count, new Stack<ISignalNode>());
+    double[] values = input.GetValues(sample, count, new Stack<SignalNode>());
 
     for (int i = 0; i < count; i++) {
       for (int c = 0; c < channels; c++) {

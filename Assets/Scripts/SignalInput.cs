@@ -12,13 +12,13 @@ public class SignalInput : SignalPort {
     return connectedOutput != null;
   }
 
-  public double GetValue(double sample, Stack<ISignalNode> nodes) {
+  public double GetValue(double sample, Stack<SignalNode> nodes) {
     nodes.Push(parent);
 
     return connectedOutput != null ? connectedOutput.GetValue(sample, nodes) * amount : 0;
   }
 
-  public double[] GetValues(double sample, int count, Stack<ISignalNode> nodes) {
+  public double[] GetValues(double sample, int count, Stack<SignalNode> nodes) {
     nodes.Push(parent);
 
     return connectedOutput == null ? Enumerable.Repeat(0d, count).ToArray() :

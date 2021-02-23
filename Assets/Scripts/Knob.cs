@@ -14,8 +14,8 @@ public class Knob : MonoBehaviour, IBeginDragHandler, IDragHandler {
   Vector3 beginDragPosition;
   float beginDragValue;
 
-  float minAngle = -45;
-  float maxAngle = 215;
+  float minAngle = -215;
+  float maxAngle = 45;
 
   void Awake() {
     cameraUtil = FindObjectOfType<CameraUtil>();

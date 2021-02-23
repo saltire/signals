@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class Mixer : MonoBehaviour, ISignalNode {
+public class Mixer : SignalNode {
   SignalInput[] inputs;
   Knob fader;
 
@@ -19,13 +19,13 @@ public class Mixer : MonoBehaviour, ISignalNode {
     };
   }
 
-  public double GetValue(double sample, Stack<ISignalNode> nodes) {
+  public override double GetValue(double sample, Stack<SignalNode> nodes) {
     float[] mult = GetMultipliers();
 
     return inputs.Select((input, i) => input.GetValue(sample, nodes) * mult[i]).Sum();
   }
 
-  public double[] GetValues(double sample, int count, Stack<ISignalNode> nodes) {
+  public override double[] GetValues(double sample, int count, Stack<SignalNode> nodes) {
     double[][] values = inputs.Select(i => i.GetValues(sample, count, nodes)).ToArray();
     float[] mult = GetMultipliers();
 
