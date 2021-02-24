@@ -87,6 +87,24 @@ public class CableManager : MonoBehaviour {
       (heldCable?.input == null ? Holding.Input : Holding.Output);
   }
 
+  public void OnPortEnter(SignalPort port) {
+    bool portIsInput = port.GetType() == typeof(SignalInput);
+    Cable connectedCable = cables
+      .Find(c => portIsInput ? port == c.input : port == c.output);
+    bool portHasCable = connectedCable != null;
+    Holding holding = GetHoldingState();
+
+    // Turn port green if clicking will connect a cable.
+    if (!portHasCable && (holding == Holding.None  ||
+      (holding == Holding.Input && portIsInput) || (holding == Holding.Output && !portIsInput))) {
+      port.SetColor(Color.green);
+    }
+    // Turn port yellow if clicking will disconnect a cable.
+    else if ((portHasCable && holding == Holding.None) || connectedCable == heldCable) {
+      port.SetColor(Color.yellow);
+    }
+  }
+
   public void OnPortClick(SignalPort port) {
     bool portIsInput = port.GetType() == typeof(SignalInput);
     Cable connectedCable = cables
@@ -107,6 +125,8 @@ public class CableManager : MonoBehaviour {
           line = line,
         };
         cables.Add(heldCable);
+
+        OnPortEnter(port);
       }
       else {
         // Disconnect the cable from the port and hold it.
@@ -120,6 +140,8 @@ public class CableManager : MonoBehaviour {
         }
 
         heldCable = connectedCable;
+
+        OnPortEnter(port);
       }
     }
     else if (!portHasCable && holding == (portIsInput ? Holding.Input : Holding.Output)) {
@@ -138,6 +160,8 @@ public class CableManager : MonoBehaviour {
       });
 
       heldCable = null;
+
+      OnPortEnter(port);
     }
     else if ((holding == Holding.Input && port == heldCable.output) ||
       (holding == Holding.Output && port == heldCable.input)) {
@@ -145,6 +169,8 @@ public class CableManager : MonoBehaviour {
       cables.Remove(heldCable);
       Destroy(heldCable.line.gameObject);
       heldCable = null;
+
+      OnPortEnter(port);
     }
   }
 }
