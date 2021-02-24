@@ -16,30 +16,28 @@ public class Oscilloscope : SignalNode {
   [Range(0, 1024)]
   public int phaseShift = 0;
 
+  public float lineWidth = .01f;
+
   void Start() {
     input = GetComponentInChildren<SignalInput>();
     line = GetComponentInChildren<LineRenderer>();
 
-    line.widthMultiplier = .01f;
+    line.widthMultiplier = lineWidth;
   }
 
   void Update() {
     int length = phaseShift + windowSize;
     while (queue.Count >= length) {
-      Vector2 screenSize = line.transform.localScale;
       Vector3[] positions = new Vector3[windowSize];
-      Vector3 startPos = line.transform.position +
-        line.transform.rotation * Vector3.left * screenSize.x / 2;
-      float unitWidth = screenSize.x / Mathf.Max(1, windowSize - 1);
+      Vector3 startPos = Vector3.left / 2;
+      int units = windowSize - 1;
 
       for (int i = 0; i < length; i++) {
         double value = queue.Dequeue();
         if (i >= phaseShift) {
           int p = i - phaseShift;
-          positions[p] = startPos +
-            line.transform.rotation *
-            new Vector3(p * unitWidth,
-              Mathf.Clamp((float)value * yScale, -1, 1) * screenSize.y / 2, -.01f);
+          positions[p] = startPos + new Vector3((float)p / units,
+            Mathf.Clamp((float)value * yScale, -1, 1) / 2, -.01f);
         }
       }
       line.positionCount = positions.Length;
