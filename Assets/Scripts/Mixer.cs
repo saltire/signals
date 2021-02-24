@@ -5,17 +5,18 @@ using UnityEngine;
 
 public class Mixer : SignalNode {
   SignalInput[] inputs;
-  Knob fader;
+  RangeControl fader;
 
   void Awake() {
     inputs = GetComponentsInChildren<SignalInput>();
-    fader = GetComponentInChildren<Knob>();
+    fader = GetComponentInChildren<RangeControl>();
   }
 
   float[] GetMultipliers() {
+    // Fader range should go from -1 to 1.
     return new float[] {
-      Mathf.Min((2 - fader.value) * 2, 1),
-      Mathf.Min((fader.value - 1) * 2, 1),
+      Mathf.Min(-fader.value + 1, 1),
+      Mathf.Min(fader.value + 1, 1),
     };
   }
 

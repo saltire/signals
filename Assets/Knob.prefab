@@ -12,8 +12,7 @@ GameObject:
   - component: {fileID: 3805190863320698957}
   - component: {fileID: 2405268578221879161}
   - component: {fileID: 9159659994152650260}
-  - component: {fileID: 4991683025168431845}
-  - component: {fileID: 5574296258151030864}
+  - component: {fileID: 948307647851704202}
   m_Layer: 0
   m_Name: Knob
   m_TagString: Untagged
@@ -47,10 +46,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a66a285974fe53448abdda04ff4437ae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  value: 0
   min: 0
   max: 100
   sensitivity: 1
-  value: 0
 --- !u!33 &2405268578221879161
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -100,8 +99,8 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!135 &4991683025168431845
-SphereCollider:
+--- !u!136 &948307647851704202
+CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -110,19 +109,7 @@ SphereCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!135 &5574296258151030864
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3873207230198586257}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5
+  m_Radius: 0.5000001
+  m_Height: 2
+  m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}

@@ -39,7 +39,7 @@ public class Oscilloscope : SignalNode {
           positions[p] = startPos +
             line.transform.rotation *
             new Vector3(p * unitWidth,
-              Mathf.Clamp((float)value * yScale, -1, 1) * screenSize.y / 2, -.1f);
+              Mathf.Clamp((float)value * yScale, -1, 1) * screenSize.y / 2, -.01f);
         }
       }
       line.positionCount = positions.Length;

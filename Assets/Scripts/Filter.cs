@@ -11,7 +11,7 @@ public enum FilterType {
 
 public class Filter : SignalNode {
   SignalInput input;
-  Knob cutoffKnob;
+  RangeControl cutoffKnob;
   public Button lowPassButton;
   public Button highPassButton;
 

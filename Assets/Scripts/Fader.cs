@@ -3,27 +3,33 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class Knob : RangeControl, IBeginDragHandler, IDragHandler {
-  public float min = 0;
-  public float max = 100;
+public class Fader : RangeControl, IBeginDragHandler, IDragHandler {
+  public float min = -1;
+  public float max = 1;
   public float sensitivity = 1;
+  public float[] snapValues = new[] { 0f };
+  public float snapRange = .1f;
 
   CameraUtil cameraUtil;
   Vector3 beginDragPosition;
   float beginDragValue;
 
-  float minAngle = -215;
-  float maxAngle = 45;
+  Transform slot;
+  Transform handle;
 
   void Awake() {
     cameraUtil = FindObjectOfType<CameraUtil>();
 
-    Rotate();
+    slot = GetComponentInChildren<SpriteRenderer>().transform;
+    handle = GetComponentInChildren<Collider>().transform;
+
+    MoveHandle();
   }
 
-  void Rotate() {
+  void MoveHandle() {
     float valPercent = Mathf.InverseLerp(min, max, value);
-    transform.rotation = Quaternion.Euler(0, Mathf.Lerp(minAngle, maxAngle, valPercent), 0);
+    handle.position = new Vector3(slot.position.x + slot.localScale.x * (valPercent - .5f),
+      handle.position.y, handle.position.z);
   }
 
   public void OnBeginDrag(PointerEventData data) {
@@ -35,6 +41,14 @@ public class Knob : RangeControl, IBeginDragHandler, IDragHandler {
     Vector3 dragPosition = cameraUtil.MousePositionOnPlane(data.position, transform.position.y);
     float deltaValue = (dragPosition.x - beginDragPosition.x) * sensitivity;
     value = Mathf.Clamp(beginDragValue + deltaValue, min, max);
-    Rotate();
+
+    foreach (float snapValue in snapValues) {
+      if (Mathf.Abs(value - snapValue) < snapRange) {
+        value = snapValue;
+        break;
+      }
+    }
+
+    MoveHandle();
   }
 }

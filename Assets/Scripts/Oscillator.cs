@@ -14,7 +14,7 @@ public enum WaveType {
 public class Oscillator : SignalNode {
   public SignalInput frequencyAdjustInput;
   public SignalInput volumeAdjustInput;
-  public Knob frequencyKnob;
+  public RangeControl frequencyKnob;
   public Button sineButton;
   public Button squareButton;
   public Button sawtoothButton;
