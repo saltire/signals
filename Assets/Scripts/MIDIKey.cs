@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class MIDIKey : MonoBehaviour, IPointerDownHandler, IPointerUpHandler {
-  public float frequency = 440;
+  public int note;
 
   MIDIKeyboard parent;
 

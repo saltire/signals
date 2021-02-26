@@ -32,7 +32,7 @@ public class Oscillator : SignalNode {
   double sampleFrequency = 48000;
   const double TAU = Mathf.PI * 2.0;
 
-  float midiFrequency = 440;
+  int midiNote = 0;
   float midiVolume = 0;
 
   System.Random rand;
@@ -78,8 +78,8 @@ public class Oscillator : SignalNode {
     }
   }
 
-  public override void OnMIDIEvent(float frequency, float volume) {
-    midiFrequency = frequency;
+  public override void OnMIDIEvent(int note, float volume) {
+    midiNote = note;
     midiVolume = volume;
   }
 
@@ -96,12 +96,12 @@ public class Oscillator : SignalNode {
       waveformInput.GetValues(sample, count, nodes) :
       Enumerable.Repeat(0d, count).ToArray();
 
-    float frequency = frequencyKnob.value;
+    double frequency = frequencyKnob.value;
     float volume = volumeKnob.value;
     float waveform = waveformKnob.value;
 
     if (midiInput.IsConnected()) {
-      frequency = midiFrequency;
+      frequency = MIDI.notes[midiNote];
       volume = midiVolume;
     }
 

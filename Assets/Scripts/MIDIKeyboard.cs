@@ -10,10 +10,10 @@ public class MIDIKeyboard : MonoBehaviour {
   }
 
   public void OnKeyDown(MIDIKey key) {
-    output.SendMIDIEvent(key.frequency, 1);
+    output.SendMIDIEvent(key.note, 1);
   }
 
   public void OnKeyUp(MIDIKey key) {
-    output.SendMIDIEvent(key.frequency, 0);
+    output.SendMIDIEvent(key.note, 0);
   }
 }
