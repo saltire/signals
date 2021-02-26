@@ -20,12 +20,6 @@ public class Mixer : SignalNode {
     };
   }
 
-  public override double GetValue(double sample, Stack<SignalNode> nodes) {
-    float[] mult = GetMultipliers();
-
-    return inputs.Select((input, i) => input.GetValue(sample, nodes) * mult[i]).Sum();
-  }
-
   public override double[] GetValues(double sample, int count, Stack<SignalNode> nodes) {
     double[][] values = inputs.Select(i => i.GetValues(sample, count, nodes)).ToArray();
     float[] mult = GetMultipliers();

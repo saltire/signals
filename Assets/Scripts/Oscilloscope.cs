@@ -45,10 +45,6 @@ public class Oscilloscope : SignalNode {
     }
   }
 
-  public override double GetValue(double sample, Stack<SignalNode> nodes) {
-    return input.GetValue(sample, nodes);
-  }
-
   public override double[] GetValues(double sample, int count, Stack<SignalNode> nodes) {
     double[] values = input.GetValues(sample, count, nodes);
     foreach (double value in values) {

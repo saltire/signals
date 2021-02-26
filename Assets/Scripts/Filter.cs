@@ -74,10 +74,6 @@ public class Filter : SignalNode {
     }
   }
 
-  public override double GetValue(double sample, Stack<SignalNode> nodes) {
-    return filter.Transform((float)input.GetValue(sample, nodes));
-  }
-
   public override double[] GetValues(double sample, int count, Stack<SignalNode> nodes) {
     return input.GetValues(sample, count, nodes)
       .Select(s => (double)filter.Transform((float)s)).ToArray();

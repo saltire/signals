@@ -50,15 +50,6 @@ public class Oscillator : SignalNode {
     }
   }
 
-  // public void AdjustFrequency(float speed) {
-  //   // TODO: rounding options; exponentially increase speed; accelerate speed over time
-  //   frequency = Mathf.Max(0, (float)frequency + speed * Time.deltaTime * frequencyAdjustSensitivity);
-  // }
-
-  // public void AdjustVolume(float speed) {
-  //   volume = Mathf.Max(0, volume + speed * Time.deltaTime * volumeAdjustSensitivity);
-  // }
-
   public override void OnButtonClick(Button button) {
     sineButton.SetGlow(false);
     squareButton.SetGlow(false);
@@ -79,40 +70,6 @@ public class Oscillator : SignalNode {
     else if (button == noiseButton) {
       wave = WaveType.Noise;
     }
-  }
-
-  public override double GetValue(double sample, Stack<SignalNode> nodes) {
-    double sampleIncrement = sample - lastSample;
-    lastSample = sample;
-
-    double currentFrequency = frequencyKnob.value;
-    if (frequencyAdjustInput.IsConnected()) {
-      currentFrequency += frequencyAdjustInput.GetValue(sample, nodes);
-    }
-    double increment = sampleIncrement * currentFrequency / sampleFrequency;
-
-    phase = (phase + increment) % 1;
-
-    double value = 0;
-
-    if (wave == WaveType.Sine) {
-      value = Mathf.Sin((float)(phase * TAU));
-    }
-    else if (wave == WaveType.Square) {
-      value = Mathf.Sign(Mathf.Sin((float)(phase * TAU)));
-    }
-    else if (wave == WaveType.Sawtooth) {
-      value = phase * 2 - 1;
-    }
-    else if (wave == WaveType.Noise) {
-      value = rand.NextDouble() * 2 - 1;
-    }
-
-    if (volumeAdjustInput.IsConnected()) {
-      value *= 1 + volumeAdjustInput.GetValue(sample, nodes);
-    }
-
-    return value * volume;
   }
 
   public override double[] GetValues(double sample, int count, Stack<SignalNode> nodes) {
