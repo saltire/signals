@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 public class Button : MonoBehaviour, IPointerClickHandler {
   public Color color = Color.red;
 
-  protected SignalNode parent;
+  SignalNode parent;
 
   Material material;
 

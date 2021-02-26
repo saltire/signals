@@ -27,6 +27,8 @@ IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler {
     material = GetComponent<MeshRenderer>().material;
   }
 
+  public abstract bool IsConnected();
+
   public void SetColor(Color color) {
     material.color = color;
   }
@@ -44,26 +46,22 @@ IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler {
   }
 }
 
-// Sides
-
 public abstract class InputPort : Port {
   public override PortSide Side { get { return PortSide.Input; } }
 
   public OutputPort connectedOutput;
 
-  public bool IsConnected() {
+  public override bool IsConnected() {
     return connectedOutput != null;
   }
 }
 
 public abstract class OutputPort : Port {
   public override PortSide Side { get { return PortSide.Output; } }
+
+  public InputPort connectedInput;
+
+  public override bool IsConnected() {
+    return connectedInput != null;
+  }
 }
-
-// Types
-
-public interface ISignalPort {
-  public double[] GetValues(double sample, int count, Stack<SignalNode> nodes);
-}
-
-public interface IMIDIPort {}

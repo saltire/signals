@@ -45,7 +45,20 @@ public class CableManager : MonoBehaviour {
           input.connectedOutput.transform.position,
         });
 
+        input.connectedOutput.connectedInput = input;
         cables.Add(new Cable() { input = input, output = input.connectedOutput, line = line });
+      }
+    }
+    foreach (OutputPort output in FindObjectsOfType<OutputPort>()) {
+      if (output.IsConnected() && !cables.Exists(c => c.output == output)) {
+        LineRenderer line = NewLine();
+        line.SetPositions(new[] {
+          output.connectedInput.transform.position,
+          output.transform.position,
+        });
+
+        output.connectedInput.connectedOutput = output;
+        cables.Add(new Cable() { input = output.connectedInput, output = output, line = line });
       }
     }
   }
@@ -119,7 +132,7 @@ public class CableManager : MonoBehaviour {
       port.SetColor(Color.green);
     }
     // Turn port yellow if clicking will disconnect a cable.
-    else if ((portHasCable && !holdingCable) || connectedCable == heldCable) {
+    else if (portHasCable && (!holdingCable || heldCable == connectedCable)) {
       port.SetColor(Color.yellow);
     }
   }
@@ -149,6 +162,7 @@ public class CableManager : MonoBehaviour {
       else {
         // Disconnect the cable from the port and hold it.
         connectedCable.input.connectedOutput = null;
+        connectedCable.output.connectedInput = null;
 
         if (port is InputPort) {
           connectedCable.input = null;
@@ -172,6 +186,7 @@ public class CableManager : MonoBehaviour {
       }
 
       heldCable.input.connectedOutput = heldCable.output;
+      heldCable.output.connectedInput = heldCable.input;
       heldCable.line.SetPositions(new[] {
         heldCable.input.transform.position,
         heldCable.output.transform.position,

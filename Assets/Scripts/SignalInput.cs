@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class SignalInput : InputPort, ISignalPort {
+public class SignalInput : InputPort {
   public override PortType Type { get { return PortType.Signal; } }
 
   public float amount = 0;

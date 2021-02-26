@@ -23,6 +23,7 @@ public class Oscillator : SignalNode {
   public Button slopedButton;
   public Button noiseButton;
   Button[] buttons;
+  MIDIInput midiInput;
 
   public WaveType wave = WaveType.Sine;
 
@@ -31,9 +32,14 @@ public class Oscillator : SignalNode {
   double sampleFrequency = 48000;
   const double TAU = Mathf.PI * 2.0;
 
+  float midiFrequency = 440;
+  float midiVolume = 0;
+
   System.Random rand;
 
   void Awake() {
+    midiInput = GetComponentInChildren<MIDIInput>();
+
     rand = new System.Random();
 
     if (wave == WaveType.Sine) {
@@ -72,6 +78,11 @@ public class Oscillator : SignalNode {
     }
   }
 
+  public override void OnMIDIEvent(float frequency, float volume) {
+    midiFrequency = frequency;
+    midiVolume = volume;
+  }
+
   public override double[] GetValues(double sample, int count, Stack<SignalNode> nodes) {
     double[] values = new double[count];
 
@@ -88,6 +99,11 @@ public class Oscillator : SignalNode {
     float frequency = frequencyKnob.value;
     float volume = volumeKnob.value;
     float waveform = waveformKnob.value;
+
+    if (midiInput.IsConnected()) {
+      frequency = midiFrequency;
+      volume = midiVolume;
+    }
 
     for (int i = 0; i < count; i++) {
       double currentFrequency = frequency + frequencyAdjustValues[i];

@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class SignalOutput : OutputPort, ISignalPort {
+public class SignalOutput : OutputPort {
   public override PortType Type { get { return PortType.Signal; } }
 
   public double[] GetValues(double sample, int count, Stack<SignalNode> nodes) {
