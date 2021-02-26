@@ -11,6 +11,13 @@ public enum WaveType {
   Noise,
 };
 
+class Voice {
+  public double frequency;
+  public float volume;
+  public double lastSample;
+  public double phase;
+}
+
 public class Oscillator : SignalNode {
   public SignalInput frequencyInput;
   public SignalInput volumeInput;
@@ -27,13 +34,12 @@ public class Oscillator : SignalNode {
 
   public WaveType wave = WaveType.Sine;
 
-  double phase;
+  Voice defaultVoice = new Voice {};
+  Dictionary<int, Voice> midiVoices = new Dictionary<int, Voice>();
+
   double lastSample = 0;
   double sampleFrequency = 48000;
   const double TAU = Mathf.PI * 2.0;
-
-  int midiNote = 0;
-  float midiVolume = 0;
 
   System.Random rand;
 
@@ -79,13 +85,15 @@ public class Oscillator : SignalNode {
   }
 
   public override void OnMIDIEvent(int note, float volume) {
-    midiNote = note;
-    midiVolume = volume;
+    if (volume > 0) {
+      midiVoices[note] = new Voice { frequency = MIDI.notes[note], volume = volume };
+    }
+    else {
+      midiVoices.Remove(note);
+    }
   }
 
   public override double[] GetValues(double sample, int count, Stack<SignalNode> nodes) {
-    double[] values = new double[count];
-
     double[] frequencyAdjustValues = frequencyInput.IsConnected() ?
       frequencyInput.GetValues(sample, count, nodes) :
       Enumerable.Repeat(0d, count).ToArray();
@@ -96,44 +104,51 @@ public class Oscillator : SignalNode {
       waveformInput.GetValues(sample, count, nodes) :
       Enumerable.Repeat(0d, count).ToArray();
 
-    double frequency = frequencyKnob.value;
-    float volume = volumeKnob.value;
+    defaultVoice.frequency = frequencyKnob.value;
+    defaultVoice.volume = volumeKnob.value;
     float waveform = waveformKnob.value;
 
-    if (midiInput.IsConnected()) {
-      frequency = MIDI.notes[midiNote];
-      volume = midiVolume;
-    }
+    Voice[] voices = midiInput.IsConnected() ? midiVoices.Values.ToArray() : new[] { defaultVoice };
+
+    double[] values = new double[count];
 
     for (int i = 0; i < count; i++) {
-      double currentFrequency = frequency + frequencyAdjustValues[i];
-      float currentWaveform = (float)(waveform + waveformAdjustValues[i]);
-      float currentVolume = (float)(volume * (1 + volumeAdjustValues[i]));
-
       double thisSample = sample + i;
-      double sampleIncrement = thisSample - lastSample;
       lastSample = thisSample;
-      double phaseIncrement = sampleIncrement * currentFrequency / sampleFrequency;
-      phase = (phase + phaseIncrement) % 1;
 
-      double value = 0;
+      float currentWaveform = (float)(waveform + waveformAdjustValues[i]);
 
-      if (wave == WaveType.Sine) {
-        value = Mathf.Sin((float)(phase * TAU));
-      }
-      else if (wave == WaveType.Pulse) {
-        value = phase >= currentWaveform ? -1 : 1;
-      }
-      else if (wave == WaveType.Sloped) {
-        value = phase < currentWaveform ?
-          Mathf.Lerp(-1, 1, Mathf.InverseLerp(0, currentWaveform, (float)phase)) :
-          Mathf.Lerp(1, -1, Mathf.InverseLerp(currentWaveform, 1, (float)phase));
-      }
-      else if (wave == WaveType.Noise) {
-        value = rand.NextDouble() * 2 - 1;
-      }
+      values[i] = 0;
 
-      values[i] = value * currentVolume;
+      foreach (Voice voice in voices) {
+        double currentFrequency = voice.frequency + frequencyAdjustValues[i];
+
+        double sampleIncrement = thisSample - voice.lastSample;
+        double phaseIncrement = sampleIncrement * currentFrequency / sampleFrequency;
+        voice.lastSample = thisSample;
+        voice.phase = (voice.phase + phaseIncrement) % 1;
+
+        float currentVolume = (float)(voice.volume * (1 + volumeAdjustValues[i]));
+
+        double value = 0;
+
+        if (wave == WaveType.Sine) {
+          value = Mathf.Sin((float)(voice.phase * TAU));
+        }
+        else if (wave == WaveType.Pulse) {
+          value = voice.phase >= currentWaveform ? -1 : 1;
+        }
+        else if (wave == WaveType.Sloped) {
+          value = voice.phase < currentWaveform ?
+            Mathf.Lerp(-1, 1, Mathf.InverseLerp(0, currentWaveform, (float)voice.phase)) :
+            Mathf.Lerp(1, -1, Mathf.InverseLerp(currentWaveform, 1, (float)voice.phase));
+        }
+        else if (wave == WaveType.Noise) {
+          value = rand.NextDouble() * 2 - 1;
+        }
+
+        values[i] += value * currentVolume;
+      }
     }
 
     return values;
