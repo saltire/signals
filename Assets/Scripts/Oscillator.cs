@@ -18,7 +18,7 @@ class Voice {
   public double pressSample;
   public double? releaseSample;
   public double phaseSample;
-  public double phase;
+  public float phase;
 }
 
 public class Oscillator : SignalNode {
@@ -43,7 +43,9 @@ public class Oscillator : SignalNode {
 
   double lastSample = 0;
   double sampleFrequency = 48000;
-  const double TAU = Mathf.PI * 2.0;
+  const float TAU = Mathf.PI * 2;
+
+  int waveformSineMultiplier = 20;
 
   System.Random rand;
 
@@ -136,7 +138,7 @@ public class Oscillator : SignalNode {
         double currentFrequency = voice.frequency + frequencyAdjustValues[i];
 
         double sampleIncrement = thisSample - voice.phaseSample;
-        double phaseIncrement = sampleIncrement * currentFrequency / sampleFrequency;
+        float phaseIncrement = (float)(sampleIncrement * currentFrequency / sampleFrequency);
         voice.phaseSample = thisSample;
         voice.phase = (voice.phase + phaseIncrement) % 1;
 
@@ -157,15 +159,21 @@ public class Oscillator : SignalNode {
         double value = 0;
 
         if (wave == WaveType.Sine) {
-          value = Mathf.Sin((float)(voice.phase * TAU));
+          value = Mathf.Sin((voice.phase * TAU));
+
+          float sineWaveform = Mathf.Lerp(-1, 1, currentWaveform);
+          for (int w = 1; w <= Mathf.Abs(sineWaveform) * waveformSineMultiplier; w++) {
+            float m = 1 + w * 2;
+            value += Mathf.Sin((voice.phase * m * TAU)) / m * Mathf.Sign(sineWaveform);
+          }
         }
         else if (wave == WaveType.Pulse) {
-          value = voice.phase >= currentWaveform ? -1 : 1;
+          value = Mathf.Sign(voice.phase - currentWaveform);
         }
         else if (wave == WaveType.Sloped) {
           value = voice.phase < currentWaveform ?
-            Mathf.Lerp(-1, 1, Mathf.InverseLerp(0, currentWaveform, (float)voice.phase)) :
-            Mathf.Lerp(1, -1, Mathf.InverseLerp(currentWaveform, 1, (float)voice.phase));
+            Mathf.Lerp(-1, 1, Mathf.InverseLerp(0, currentWaveform, voice.phase)) :
+            Mathf.Lerp(1, -1, Mathf.InverseLerp(currentWaveform, 1, voice.phase));
         }
         else if (wave == WaveType.Noise) {
           value = rand.NextDouble() * 2 - 1;
