@@ -12,9 +12,12 @@ public enum WaveType {
 };
 
 class Voice {
+  public int note;
   public double frequency;
   public float volume;
-  public double lastSample;
+  public double pressSample;
+  public double? releaseSample;
+  public double phaseSample;
   public double phase;
 }
 
@@ -31,6 +34,7 @@ public class Oscillator : SignalNode {
   public Button noiseButton;
   Button[] buttons;
   MIDIInput midiInput;
+  Envelope envelope;
 
   public WaveType wave = WaveType.Sine;
 
@@ -45,6 +49,7 @@ public class Oscillator : SignalNode {
 
   void Awake() {
     midiInput = GetComponentInChildren<MIDIInput>();
+    envelope = GetComponentInChildren<Envelope>();
 
     rand = new System.Random();
 
@@ -86,10 +91,15 @@ public class Oscillator : SignalNode {
 
   public override void OnMIDIEvent(int note, float volume) {
     if (volume > 0) {
-      midiVoices[note] = new Voice { frequency = MIDI.notes[note], volume = volume };
+      midiVoices[note] = new Voice {
+        frequency = MIDI.notes[note],
+        volume = volume,
+        pressSample = lastSample,
+        releaseSample = null,
+      };
     }
     else {
-      midiVoices.Remove(note);
+      midiVoices[note].releaseSample = lastSample;
     }
   }
 
@@ -108,7 +118,7 @@ public class Oscillator : SignalNode {
     defaultVoice.volume = volumeKnob.value;
     float waveform = waveformKnob.value;
 
-    Voice[] voices = midiInput.IsConnected() ? midiVoices.Values.ToArray() : new[] { defaultVoice };
+    bool midi = midiInput.IsConnected();
 
     double[] values = new double[count];
 
@@ -118,17 +128,31 @@ public class Oscillator : SignalNode {
 
       float currentWaveform = (float)(waveform + waveformAdjustValues[i]);
 
+      Voice[] voices = midi ? midiVoices.Values.ToArray() : new[] { defaultVoice };
+
       values[i] = 0;
 
       foreach (Voice voice in voices) {
         double currentFrequency = voice.frequency + frequencyAdjustValues[i];
 
-        double sampleIncrement = thisSample - voice.lastSample;
+        double sampleIncrement = thisSample - voice.phaseSample;
         double phaseIncrement = sampleIncrement * currentFrequency / sampleFrequency;
-        voice.lastSample = thisSample;
+        voice.phaseSample = thisSample;
         voice.phase = (voice.phase + phaseIncrement) % 1;
 
         float currentVolume = (float)(voice.volume * (1 + volumeAdjustValues[i]));
+        if (midi && envelope != null) {
+          float? envVolume = envelope.GetVolume(
+            voice.pressSample, voice.releaseSample, thisSample, sampleFrequency);
+
+          if (envVolume == null) {
+            midiVoices.Remove(voice.note);
+            currentVolume = 0;
+          }
+          else {
+            currentVolume *= (float)envVolume;
+          }
+        }
 
         double value = 0;
 
