@@ -38,7 +38,7 @@ public class Oscillator : SignalNode {
 
   public WaveType wave = WaveType.Sine;
 
-  Voice defaultVoice = new Voice {};
+  Voice defaultVoice = new Voice { volume = 1 };
   Dictionary<int, Voice> midiVoices = new Dictionary<int, Voice>();
 
   double lastSample = 0;
@@ -91,11 +91,11 @@ public class Oscillator : SignalNode {
     }
   }
 
-  public override void OnMIDIEvent(int note, float volume) {
-    if (volume > 0) {
+  public override void OnMIDIEvent(int note, float velocity) {
+    if (velocity > 0) {
       midiVoices[note] = new Voice {
         frequency = MIDI.notes[note],
-        volume = volume,
+        volume = velocity,
         pressSample = lastSample,
         releaseSample = null,
       };
@@ -117,7 +117,7 @@ public class Oscillator : SignalNode {
       Enumerable.Repeat(0d, count).ToArray();
 
     defaultVoice.frequency = frequencyKnob.value;
-    defaultVoice.volume = volumeKnob.value;
+    float volume = volumeKnob.value;
     float waveform = waveformKnob.value;
 
     bool midi = midiInput.IsConnected();
@@ -142,7 +142,7 @@ public class Oscillator : SignalNode {
         voice.phaseSample = thisSample;
         voice.phase = (voice.phase + phaseIncrement) % 1;
 
-        float currentVolume = (float)(voice.volume * (1 + volumeAdjustValues[i]));
+        float currentVolume = (float)(voice.volume * volume * (1 + volumeAdjustValues[i]));
         if (midi && envelope != null) {
           float? envVolume = envelope.GetVolume(
             voice.pressSample, voice.releaseSample, thisSample, sampleFrequency);
