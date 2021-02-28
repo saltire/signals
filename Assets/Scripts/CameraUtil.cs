@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class CameraUtil : MonoBehaviour {
   Camera mainCamera;
@@ -15,5 +16,9 @@ public class CameraUtil : MonoBehaviour {
     float distance;
     plane.Raycast(mouseRay, out distance);
     return mouseRay.GetPoint(distance);
+  }
+
+  public Vector3 MousePositionOnPlane(float y) {
+    return MousePositionOnPlane(Mouse.current.position.ReadValue(), y);
   }
 }

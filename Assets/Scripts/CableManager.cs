@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 class Cable {
   public InputPort input;
@@ -74,8 +73,7 @@ public class CableManager : MonoBehaviour {
     // Redraw all the cable lines.
     foreach (Cable cable in cables) {
       if (cable == heldCable) {
-        Vector3 holdPosition = cameraUtil.MousePositionOnPlane(
-          Mouse.current.position.ReadValue(), cableHoldY);
+        Vector3 holdPosition = cameraUtil.MousePositionOnPlane(cableHoldY);
 
         heldCable.line.SetPositions(new[] {
           heldCable.input != null ? heldCable.input.transform.position : holdPosition,

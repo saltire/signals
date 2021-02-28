@@ -3,10 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class Knob : RangeControl, IBeginDragHandler, IDragHandler {
+public delegate void KnobClickDelegate(Knob knob);
+
+public class Knob : RangeControl, IBeginDragHandler, IDragHandler, IPointerClickHandler {
   public float min = 0;
   public float max = 100;
   public float sensitivity = 1;
+
+  public static event KnobClickDelegate knobClickDelegate;
 
   CameraUtil cameraUtil;
   Vector3 beginDragPosition;
@@ -45,5 +49,9 @@ public class Knob : RangeControl, IBeginDragHandler, IDragHandler {
     Vector3 dragPosition = cameraUtil.MousePositionOnPlane(data.position, transform.position.y);
     float deltaValue = (dragPosition.x - beginDragPosition.x) * sensitivity;
     SetValue(Mathf.Clamp(beginDragValue + deltaValue, min, max));
+  }
+
+  public void OnPointerClick(PointerEventData data) {
+    knobClickDelegate(this);
   }
 }
