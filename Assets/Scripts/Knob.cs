@@ -26,6 +26,16 @@ public class Knob : RangeControl, IBeginDragHandler, IDragHandler {
     transform.rotation = Quaternion.Euler(0, Mathf.Lerp(minAngle, maxAngle, valPercent), 0);
   }
 
+  public void SetValue(float newValue) {
+    value = newValue;
+    Rotate();
+  }
+
+  public void SetValuePercent(float valPercent) {
+    value = Mathf.Lerp(min, max, valPercent);
+    Rotate();
+  }
+
   public void OnBeginDrag(PointerEventData data) {
     beginDragPosition = cameraUtil.MousePositionOnPlane(data.pressPosition, transform.position.y);
     beginDragValue = value;
@@ -34,7 +44,6 @@ public class Knob : RangeControl, IBeginDragHandler, IDragHandler {
   public void OnDrag(PointerEventData data) {
     Vector3 dragPosition = cameraUtil.MousePositionOnPlane(data.position, transform.position.y);
     float deltaValue = (dragPosition.x - beginDragPosition.x) * sensitivity;
-    value = Mathf.Clamp(beginDragValue + deltaValue, min, max);
-    Rotate();
+    SetValue(Mathf.Clamp(beginDragValue + deltaValue, min, max));
   }
 }

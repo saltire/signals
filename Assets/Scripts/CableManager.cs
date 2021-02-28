@@ -141,11 +141,10 @@ public class CableManager : MonoBehaviour {
     Cable connectedCable = cables
       .Find(c => port is InputPort ? port == c.input : port == c.output);
     bool portHasCable = connectedCable != null;
-    bool holdingCable = heldCable != null;
     PortSide? holdingSide = GetHoldingSide();
     PortType? holdingType = GetHoldingType();
 
-    if (!holdingCable) {
+    if (heldCable == null) {
       if (!portHasCable) {
         // Create a cable connected to the port and hold it.
         LineRenderer line = NewLine();
@@ -203,6 +202,15 @@ public class CableManager : MonoBehaviour {
       heldCable = null;
 
       OnPortEnter(port);
+    }
+  }
+
+  public void OnBackgroundClick() {
+    if (heldCable != null) {
+      // Destroy the held cable.
+      cables.Remove(heldCable);
+      Destroy(heldCable.line.gameObject);
+      heldCable = null;
     }
   }
 }
