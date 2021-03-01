@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class Mixer : SignalNode {
+public class Mixer : SignalModule {
   SignalInput[] inputs;
   RangeControl fader;
 
@@ -20,8 +20,8 @@ public class Mixer : SignalNode {
     };
   }
 
-  public override double[] GetValues(double sample, int count, Stack<SignalNode> nodes) {
-    double[][] values = inputs.Select(i => i.GetValues(sample, count, nodes)).ToArray();
+  public override double[] GetValues(double sample, int count, Stack<SignalModule> modules) {
+    double[][] values = inputs.Select(i => i.GetValues(sample, count, modules)).ToArray();
     float[] mult = GetMultipliers();
 
     return values[0].Zip(values[1], (v0, v1) => v0 * mult[0] + v1 * mult[1]).ToArray();

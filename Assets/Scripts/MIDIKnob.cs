@@ -69,13 +69,15 @@ public class MIDIKnob : MonoBehaviour, IPointerClickHandler {
   }
 
   public void OnPointerClick(PointerEventData data) {
-    if (connecting) {
-      connecting = false;
-      line.positionCount = 0;
-    }
-    else {
-      connectedKnob = null;
-      connecting = true;
+    if (line.enabled) {
+      if (connecting) {
+        connecting = false;
+        line.positionCount = 0;
+      }
+      else {
+        connectedKnob = null;
+        connecting = true;
+      }
     }
   }
 

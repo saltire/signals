@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class Oscilloscope : SignalNode {
+public class Oscilloscope : SignalModule {
   SignalInput input;
   LineRenderer line;
 
@@ -44,8 +44,8 @@ public class Oscilloscope : SignalNode {
     }
   }
 
-  public override double[] GetValues(double sample, int count, Stack<SignalNode> nodes) {
-    double[] values = input.GetValues(sample, count, nodes);
+  public override double[] GetValues(double sample, int count, Stack<SignalModule> modules) {
+    double[] values = input.GetValues(sample, count, modules);
     foreach (double value in values) {
       queue.Enqueue(value);
     }

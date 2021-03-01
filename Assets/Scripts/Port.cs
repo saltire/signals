@@ -17,12 +17,12 @@ IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler {
   public abstract PortSide Side { get; }
   public abstract PortType Type { get; }
 
-  protected SignalNode parent;
+  protected SignalModule parent;
   CableManager cables;
   Material material;
 
   void Awake() {
-    parent = GetComponentInParent<SignalNode>();
+    parent = GetComponentInParent<SignalModule>();
     cables = FindObjectOfType<CableManager>();
     material = GetComponent<MeshRenderer>().material;
   }

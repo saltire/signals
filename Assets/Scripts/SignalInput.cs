@@ -9,11 +9,11 @@ public class SignalInput : InputPort {
 
   public float amount = 0;
 
-  public double[] GetValues(double sample, int count, Stack<SignalNode> nodes) {
-    nodes.Push(parent);
+  public double[] GetValues(double sample, int count, Stack<SignalModule> modules) {
+    modules.Push(parent);
 
     return connectedOutput == null ? Enumerable.Repeat(0d, count).ToArray() :
       ((SignalOutput)connectedOutput)
-        .GetValues(sample, count, nodes).Select(v => v * amount).ToArray();
+        .GetValues(sample, count, modules).Select(v => v * amount).ToArray();
   }
 }

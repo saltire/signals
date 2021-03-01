@@ -7,11 +7,11 @@ using UnityEngine.EventSystems;
 public class SignalOutput : OutputPort {
   public override PortType Type { get { return PortType.Signal; } }
 
-  public double[] GetValues(double sample, int count, Stack<SignalNode> nodes) {
-    if (nodes.Contains(parent)) {
+  public double[] GetValues(double sample, int count, Stack<SignalModule> modules) {
+    if (modules.Contains(parent)) {
       return Enumerable.Repeat(0d, count).ToArray();
     }
 
-    return parent.GetValues(sample, count, nodes);
+    return parent.GetValues(sample, count, modules);
   }
 }

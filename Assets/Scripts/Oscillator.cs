@@ -21,7 +21,7 @@ class Voice {
   public float phase;
 }
 
-public class Oscillator : SignalNode {
+public class Oscillator : SignalModule {
   public SignalInput frequencyInput;
   public SignalInput volumeInput;
   public SignalInput waveformInput;
@@ -105,15 +105,15 @@ public class Oscillator : SignalNode {
     }
   }
 
-  public override double[] GetValues(double sample, int count, Stack<SignalNode> nodes) {
+  public override double[] GetValues(double sample, int count, Stack<SignalModule> modules) {
     double[] frequencyAdjustValues = frequencyInput.IsConnected() ?
-      frequencyInput.GetValues(sample, count, nodes) :
+      frequencyInput.GetValues(sample, count, modules) :
       Enumerable.Repeat(0d, count).ToArray();
     double[] volumeAdjustValues = volumeInput.IsConnected() ?
-      volumeInput.GetValues(sample, count, nodes) :
+      volumeInput.GetValues(sample, count, modules) :
       Enumerable.Repeat(0d, count).ToArray();
     double[] waveformAdjustValues = waveformInput.IsConnected() ?
-      waveformInput.GetValues(sample, count, nodes) :
+      waveformInput.GetValues(sample, count, modules) :
       Enumerable.Repeat(0d, count).ToArray();
 
     defaultVoice.frequency = frequencyKnob.value;

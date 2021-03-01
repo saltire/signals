@@ -6,14 +6,14 @@ using UnityEngine.EventSystems;
 public class Button : MonoBehaviour, IPointerClickHandler {
   public Color color = Color.red;
 
-  SignalNode parent;
+  Module parent;
 
   Material material;
 
   void Awake() {
     material = GetComponent<MeshRenderer>().material;
     material.color = color;
-    parent = GetComponentInParent<SignalNode>();
+    parent = GetComponentInParent<Module>();
   }
 
   public void SetGlow(bool glowing) {

@@ -9,7 +9,7 @@ public enum FilterType {
   HighPass,
 }
 
-public class Filter : SignalNode {
+public class Filter : SignalModule {
   SignalInput input;
   RangeControl cutoffKnob;
   public Button lowPassButton;
@@ -74,8 +74,8 @@ public class Filter : SignalNode {
     }
   }
 
-  public override double[] GetValues(double sample, int count, Stack<SignalNode> nodes) {
-    return input.GetValues(sample, count, nodes)
+  public override double[] GetValues(double sample, int count, Stack<SignalModule> modules) {
+    return input.GetValues(sample, count, modules)
       .Select(s => (double)filter.Transform((float)s)).ToArray();
   }
 }
