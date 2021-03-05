@@ -8,8 +8,9 @@ public enum PortSide {
 }
 
 public enum PortType {
-  Signal,
+  Gate,
   MIDI,
+  Signal,
 }
 
 public abstract class Port : MonoBehaviour,

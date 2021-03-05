@@ -16,7 +16,7 @@ public class Oscilloscope : SignalModule {
   [Range(0, 1024)]
   public int phaseShift = 0;
 
-  public float lineWidth = .01f;
+  public float lineWidth = .005f;
 
   void Start() {
     input = GetComponentInChildren<SignalInput>();

@@ -38,15 +38,15 @@ public class MIDIKeyboard : MonoBehaviour {
   }
 
   void SendNote(int note, float velocity) {
-    output.SendMIDIEvent(note, velocity);
+    output.OnMIDIEvent(note, velocity);
 
     if (chord == Chord.Major) {
-      output.SendMIDIEvent(note + 4, velocity);
-      output.SendMIDIEvent(note + 7, velocity);
+      output.OnMIDIEvent(note + 4, velocity);
+      output.OnMIDIEvent(note + 7, velocity);
     }
     else if (chord == Chord.Minor) {
-      output.SendMIDIEvent(note + 3, velocity);
-      output.SendMIDIEvent(note + 7, velocity);
+      output.OnMIDIEvent(note + 3, velocity);
+      output.OnMIDIEvent(note + 7, velocity);
     }
   }
 }

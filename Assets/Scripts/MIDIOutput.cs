@@ -7,7 +7,7 @@ using UnityEngine.EventSystems;
 public class MIDIOutput : OutputPort {
   public override PortType Type { get { return PortType.MIDI; } }
 
-  public void SendMIDIEvent(int note, float velocity) {
+  public void OnMIDIEvent(int note, float velocity) {
     if (IsConnected()) {
       ((MIDIInput)connectedInput).OnMIDIEvent(note, velocity);
     }

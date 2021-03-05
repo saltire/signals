@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class Button : MonoBehaviour, IPointerClickHandler {
+public class Button : MonoBehaviour, IPointerClickHandler, IPointerDownHandler, IPointerUpHandler {
   public Color color = Color.red;
 
   Module parent;
@@ -22,5 +22,13 @@ public class Button : MonoBehaviour, IPointerClickHandler {
 
   public void OnPointerClick(PointerEventData data) {
     parent.OnButtonClick(this);
+  }
+
+  public void OnPointerDown(PointerEventData data) {
+    parent.OnButtonDown(this);
+  }
+
+  public void OnPointerUp(PointerEventData data) {
+    parent.OnButtonUp(this);
   }
 }
