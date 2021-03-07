@@ -74,7 +74,8 @@ public class Filter : SignalModule {
     }
   }
 
-  public override double[] GetValues(double sample, int count, Stack<SignalModule> modules) {
+  public override double[] GetValues(double sample, int count, Stack<SignalModule> modules,
+    SignalOutput output) {
     return input.GetValues(sample, count, modules)
       .Select(s => (double)filter.Transform((float)s)).ToArray();
   }

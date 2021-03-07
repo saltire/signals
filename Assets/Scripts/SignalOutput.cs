@@ -12,6 +12,6 @@ public class SignalOutput : OutputPort {
       return Enumerable.Repeat(0d, count).ToArray();
     }
 
-    return parent.GetValues(sample, count, modules);
+    return parent.GetValues(sample, count, modules, this);
   }
 }

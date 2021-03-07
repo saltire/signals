@@ -49,7 +49,8 @@ public class Mixer : SignalModule {
     };
   }
 
-  public override double[] GetValues(double sample, int count, Stack<SignalModule> modules) {
+  public override double[] GetValues(double sample, int count, Stack<SignalModule> modules,
+    SignalOutput output) {
     double[][] values = inputs.Select(i => i.GetValues(sample, count, modules)).ToArray();
     float[] mult = GetMultipliers();
 

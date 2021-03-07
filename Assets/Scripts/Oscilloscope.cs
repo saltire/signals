@@ -44,7 +44,8 @@ public class Oscilloscope : SignalModule {
     }
   }
 
-  public override double[] GetValues(double sample, int count, Stack<SignalModule> modules) {
+  public override double[] GetValues(double sample, int count, Stack<SignalModule> modules,
+    SignalOutput output) {
     double[] values = input.GetValues(sample, count, modules);
     foreach (double value in values) {
       queue.Enqueue(value);

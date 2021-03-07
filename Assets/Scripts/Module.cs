@@ -10,5 +10,6 @@ public abstract class Module : MonoBehaviour {
 }
 
 public abstract class SignalModule : Module {
-  public abstract double[] GetValues(double sample, int count, Stack<SignalModule> modules);
+  public abstract double[] GetValues(double sample, int count, Stack<SignalModule> modules,
+    SignalOutput output);
 }

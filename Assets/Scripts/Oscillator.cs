@@ -105,7 +105,8 @@ public class Oscillator : SignalModule {
     }
   }
 
-  public override double[] GetValues(double sample, int count, Stack<SignalModule> modules) {
+  public override double[] GetValues(double sample, int count, Stack<SignalModule> modules,
+    SignalOutput output) {
     double[] frequencyAdjustValues = frequencyInput.IsConnected() ?
       frequencyInput.GetValues(sample, count, modules) :
       Enumerable.Repeat(0d, count).ToArray();

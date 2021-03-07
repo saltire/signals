@@ -27,7 +27,8 @@ public class EnvelopeGenerator : SignalModule {
     }
   }
 
-  public override double[] GetValues(double sample, int count, Stack<SignalModule> modules) {
+  public override double[] GetValues(double sample, int count, Stack<SignalModule> modules,
+    SignalOutput output) {
     double[] values = new double[count];
     for (int i = 0; i < count; i++) {
       double thisSample = sample + i;
