@@ -838,11 +838,6 @@ PrefabInstance:
       propertyPath: value
       value: 0.5
       objectReference: {fileID: 0}
-    - target: {fileID: 3805190863320698957, guid: d29b15aaec161644eab555af1b95ddc4,
-        type: 3}
-      propertyPath: sensitivity
-      value: 0.1
-      objectReference: {fileID: 0}
     - target: {fileID: 3873207230198586257, guid: d29b15aaec161644eab555af1b95ddc4,
         type: 3}
       propertyPath: m_Name

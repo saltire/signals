@@ -8,13 +8,13 @@ public delegate void KnobClickDelegate(Knob knob);
 public class Knob : RangeControl, IBeginDragHandler, IDragHandler, IPointerClickHandler {
   public float min = 0;
   public float max = 100;
-  public float sensitivity = 1;
+  public float sensitivity = .1f; // Percent the dial will move per 1 unit the pointer is dragged.
 
   public static event KnobClickDelegate knobClickDelegate;
 
   CameraUtil cameraUtil;
   Vector3 beginDragPosition;
-  float beginDragValue;
+  float beginDragValuePercent;
 
   float minAngle = -215;
   float maxAngle = 45;
@@ -30,7 +30,7 @@ public class Knob : RangeControl, IBeginDragHandler, IDragHandler, IPointerClick
     transform.rotation = Quaternion.Euler(0, Mathf.Lerp(minAngle, maxAngle, valPercent), 0);
   }
 
-  public void SetValue(float newValue) {
+  void SetValue(float newValue) {
     value = newValue;
     Rotate();
   }
@@ -42,13 +42,13 @@ public class Knob : RangeControl, IBeginDragHandler, IDragHandler, IPointerClick
 
   public void OnBeginDrag(PointerEventData data) {
     beginDragPosition = cameraUtil.MousePositionOnPlane(data.pressPosition, transform.position.y);
-    beginDragValue = value;
+    beginDragValuePercent = Mathf.InverseLerp(min, max, value);
   }
 
   public void OnDrag(PointerEventData data) {
     Vector3 dragPosition = cameraUtil.MousePositionOnPlane(data.position, transform.position.y);
-    float deltaValue = (dragPosition.x - beginDragPosition.x) * sensitivity;
-    SetValue(Mathf.Clamp(beginDragValue + deltaValue, min, max));
+    float deltaValuePercent = (dragPosition.x - beginDragPosition.x) * sensitivity;
+    SetValuePercent(beginDragValuePercent + deltaValuePercent);
   }
 
   public void OnPointerClick(PointerEventData data) {
