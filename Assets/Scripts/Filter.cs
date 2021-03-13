@@ -11,16 +11,16 @@ public enum FilterType {
 
 public class Filter : SignalModule {
   SignalInput input;
-  RangeControl cutoffKnob;
   public Button lowPassButton;
   public Button highPassButton;
+  public RangeControl cutoffKnob;
+  public RangeControl qKnob;
 
   public FilterType type;
 
-  float lastCutoff;
   FilterType lastType;
-
-  float q = 1;
+  float lastCutoff;
+  float lastQ;
 
   float sampleRate = 48000;
 
@@ -28,12 +28,13 @@ public class Filter : SignalModule {
 
   void Awake() {
     input = GetComponentInChildren<SignalInput>();
-    cutoffKnob = GetComponentInChildren<Knob>();
 
     float cutoff = cutoffKnob.value;
+    float q = qKnob.value;
 
     lastType = type;
     lastCutoff = cutoff;
+    lastQ = q;
 
     if (type == FilterType.LowPass) {
       filter = BiQuadFilter.LowPassFilter(sampleRate, cutoff, q);
@@ -47,10 +48,12 @@ public class Filter : SignalModule {
 
   void Update() {
     float cutoff = cutoffKnob.value;
+    float q = qKnob.value;
 
-    if (type != lastType || cutoff != lastCutoff) {
+    if (type != lastType || cutoff != lastCutoff || q != lastQ) {
       lastType = type;
       lastCutoff = cutoff;
+      lastQ = q;
 
       if (type == FilterType.LowPass) {
         filter.SetLowPassFilter(sampleRate, cutoff, q);
