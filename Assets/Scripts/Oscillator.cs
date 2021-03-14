@@ -54,7 +54,9 @@ public class Oscillator : SignalModule {
     envelope = GetComponentInChildren<Envelope>();
 
     rand = new System.Random();
+  }
 
+  void Start() {
     if (wave == WaveType.Sine) {
       sineButton.SetGlow(true);
     }

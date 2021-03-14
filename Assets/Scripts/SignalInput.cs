@@ -10,7 +10,7 @@ public class SignalInput : InputPort {
   public float amount = 0;
 
   public double[] GetValues(double sample, int count, Stack<SignalModule> modules) {
-    modules.Push(parent);
+    modules.Push((SignalModule)parent);
 
     return connectedOutput == null ? Enumerable.Repeat(0d, count).ToArray() :
       ((SignalOutput)connectedOutput)
