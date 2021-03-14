@@ -38,6 +38,9 @@ public class Oscillator : SignalModule {
 
   public WaveType wave = WaveType.Sine;
 
+  [Range(10, 22000)]
+  public float maxFrequency = 5500;
+
   Voice defaultVoice = new Voice { volume = 1 };
   Dictionary<int, Voice> midiVoices = new Dictionary<int, Voice>();
 
@@ -119,7 +122,7 @@ public class Oscillator : SignalModule {
       waveformInput.GetValues(sample, count, modules) :
       Enumerable.Repeat(0d, count).ToArray();
 
-    defaultVoice.frequency = frequencyKnob.value * 5500;
+    defaultVoice.frequency = frequencyKnob.value * maxFrequency;
     float volume = volumeKnob.value;
     float waveform = Mathf.Lerp(-1, 1, waveformKnob.value);
 

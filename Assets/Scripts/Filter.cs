@@ -10,13 +10,17 @@ public enum FilterType {
 }
 
 public class Filter : SignalModule {
-  SignalInput input;
+  public SignalInput input;
+  public SignalInput frequencyModInput;
+  public SignalInput intensityInput; // Ranges from 0 to 1, e.g. from an envelope generator.
   public Button lowPassButton;
   public Button highPassButton;
   public RangeControl cutoffKnob;
   public RangeControl qKnob;
 
   public FilterType type;
+  float cutoff;
+  float q;
 
   FilterType lastType;
   float lastCutoff;
@@ -29,8 +33,7 @@ public class Filter : SignalModule {
   void Awake() {
     input = GetComponentInChildren<SignalInput>();
 
-    float cutoff = cutoffKnob.value;
-    float q = qKnob.value;
+    ReadKnobs();
 
     lastType = type;
     lastCutoff = cutoff;
@@ -47,24 +50,42 @@ public class Filter : SignalModule {
   }
 
   void Update() {
-    float cutoff = cutoffKnob.value;
-    float q = qKnob.value;
+    ReadKnobs();
 
     if (type != lastType || cutoff != lastCutoff || q != lastQ) {
-      lastType = type;
-      lastCutoff = cutoff;
-      lastQ = q;
+      UpdateFilter(type, cutoff, q);
+    }
+  }
 
-      if (type == FilterType.LowPass) {
-        filter.SetLowPassFilter(sampleRate, cutoff, q);
-        lowPassButton.SetGlow(true);
-        highPassButton.SetGlow(false);
-      }
-      else if (type == FilterType.HighPass) {
-        filter.SetHighPassFilter(sampleRate, cutoff, q);
-        highPassButton.SetGlow(true);
-        lowPassButton.SetGlow(false);
-      }
+  void ReadKnobs() {
+    cutoff = Mathf.Lerp(10, 11000, cutoffKnob.value);
+    q = Mathf.Lerp(0.01f, 50, qKnob.value);
+  }
+
+  void UpdateFilter(FilterType newType, float newCutoff, float newQ) {
+    lastType = newType;
+
+    if (type == FilterType.LowPass) {
+      lowPassButton.SetGlow(true);
+      highPassButton.SetGlow(false);
+    }
+    else if (type == FilterType.HighPass) {
+      highPassButton.SetGlow(true);
+      lowPassButton.SetGlow(false);
+    }
+
+    UpdateFilter(newCutoff, newQ);
+  }
+
+  void UpdateFilter(float newCutoff, float newQ) {
+    lastCutoff = newCutoff;
+    lastQ = newQ;
+
+    if (type == FilterType.LowPass) {
+      filter.SetLowPassFilter(sampleRate, newCutoff, newQ);
+    }
+    else if (type == FilterType.HighPass) {
+      filter.SetHighPassFilter(sampleRate, newCutoff, newQ);
     }
   }
 
@@ -79,7 +100,34 @@ public class Filter : SignalModule {
 
   public override double[] GetValues(double sample, int count, Stack<SignalModule> modules,
     SignalOutput output) {
-    return input.GetValues(sample, count, modules)
-      .Select(s => (double)filter.Transform((float)s)).ToArray();
+    bool frequencyConnected = frequencyModInput.IsConnected();
+    bool intensityConnected = intensityInput.IsConnected();
+
+    double[] frequencyModValues = frequencyConnected ?
+      frequencyModInput.GetValues(sample, count, modules) :
+      Enumerable.Repeat(0d, count).ToArray();
+    double[] intensityValues = intensityConnected ?
+      intensityInput.GetValues(sample, count, modules) :
+      Enumerable.Repeat(1d, count).ToArray(); // Default to 1; full intensity.
+
+    double[] values = new double[count];
+    double[] inputValues = input.GetValues(sample, count, modules);
+
+    for (int i = 0; i < count; i++) {
+      if (frequencyConnected) {
+        // Modulate frequency between half and twice its current value.
+        float frequencyMultiplier = Mathf.Pow(2, (float)frequencyModValues[i]);
+
+        UpdateFilter(cutoff * frequencyMultiplier, q);
+      }
+
+      values[i] = (double)filter.Transform((float)inputValues[i]);
+
+      if (intensityValues[i] < 1) {
+        values[i] = Mathf.Lerp((float)inputValues[i], (float)values[i], (float)intensityValues[i]);
+      }
+    }
+
+    return values;
   }
 }
