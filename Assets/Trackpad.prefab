@@ -51,10 +51,6 @@ MonoBehaviour:
   handle: {fileID: 5667489604586835226}
   xOutput: {fileID: 5103509361079470578}
   yOutput: {fileID: 5103509361300486467}
-  xMin: -1
-  xMax: 1
-  yMin: -1
-  yMax: 1
 --- !u!1 &5667489604586835227
 GameObject:
   m_ObjectHideFlags: 0

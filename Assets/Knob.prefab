@@ -47,8 +47,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
-  min: 0
-  max: 100
   sensitivity: 0.1
 --- !u!33 &2405268578221879161
 MeshFilter:

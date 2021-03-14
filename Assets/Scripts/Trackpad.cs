@@ -8,11 +8,6 @@ public class Trackpad : SignalModule {
   public SignalOutput xOutput;
   public SignalOutput yOutput;
 
-  public float xMin = -1;
-  public float xMax = 1;
-  public float yMin = -1;
-  public float yMax = 1;
-
   Vector2 axisValues;
 
   void Awake() {
@@ -25,10 +20,8 @@ public class Trackpad : SignalModule {
       Mathf.InverseLerp(grid.bounds.min.z, grid.bounds.max.z, handle.position.z));
 
     axisValues = new Vector2(
-      Mathf.Lerp(xMin, xMax,
-        Mathf.InverseLerp(grid.bounds.min.x, grid.bounds.max.x, handle.position.x)),
-      Mathf.Lerp(yMin, yMax,
-        Mathf.InverseLerp(grid.bounds.min.z, grid.bounds.max.z, handle.position.z)));
+      Mathf.Lerp(-1, 1, Mathf.InverseLerp(grid.bounds.min.x, grid.bounds.max.x, handle.position.x)),
+      Mathf.Lerp(-1, 1, Mathf.InverseLerp(grid.bounds.min.z, grid.bounds.max.z, handle.position.z)));
   }
 
   public override double[] GetValues(double sample, int count, Stack<SignalModule> modules,

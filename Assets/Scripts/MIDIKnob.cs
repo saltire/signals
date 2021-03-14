@@ -58,7 +58,7 @@ public class MIDIKnob : MonoBehaviour, IPointerClickHandler {
     transform.rotation = Quaternion.Euler(0, Mathf.Lerp(minAngle, maxAngle, value), 0);
 
     if (connectedKnob != null) {
-      connectedKnob.SetValuePercent(newValue);
+      connectedKnob.SetValue(newValue);
     }
   }
 

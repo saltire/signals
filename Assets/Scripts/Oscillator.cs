@@ -109,19 +109,19 @@ public class Oscillator : SignalModule {
 
   public override double[] GetValues(double sample, int count, Stack<SignalModule> modules,
     SignalOutput output) {
-    double[] frequencyAdjustValues = frequencyInput.IsConnected() ?
+    double[] frequencyModValues = frequencyInput.IsConnected() ?
       frequencyInput.GetValues(sample, count, modules) :
       Enumerable.Repeat(0d, count).ToArray();
-    double[] volumeAdjustValues = volumeInput.IsConnected() ?
+    double[] volumeModValues = volumeInput.IsConnected() ?
       volumeInput.GetValues(sample, count, modules) :
       Enumerable.Repeat(0d, count).ToArray();
-    double[] waveformAdjustValues = waveformInput.IsConnected() ?
+    double[] waveformModValues = waveformInput.IsConnected() ?
       waveformInput.GetValues(sample, count, modules) :
       Enumerable.Repeat(0d, count).ToArray();
 
-    defaultVoice.frequency = frequencyKnob.value;
+    defaultVoice.frequency = frequencyKnob.value * 5500;
     float volume = volumeKnob.value;
-    float waveform = waveformKnob.value;
+    float waveform = Mathf.Lerp(-1, 1, waveformKnob.value);
 
     bool midi = midiInput.IsConnected();
 
@@ -131,31 +131,37 @@ public class Oscillator : SignalModule {
       double thisSample = sample + i;
       lastSample = thisSample;
 
-      float currentWaveform = (float)(waveform + waveformAdjustValues[i]);
+      // Modulate frequency between half and twice its current value.
+      float frequencyMultiplier = Mathf.Pow(2, (float)frequencyModValues[i]);
+      // Modulate volume between zero and twice its current value.
+      float currentVolume = volume * (1 + (float)volumeModValues[i]);
+      // Add waveform mod value to knob value.
+      float currentWaveform = (float)(waveform + waveformModValues[i]);
+      float waveformPhase = Mathf.InverseLerp(-1, 1, currentWaveform);
 
       Voice[] voices = midi ? midiVoices.Values.ToArray() : new[] { defaultVoice };
 
       values[i] = 0;
 
       foreach (Voice voice in voices) {
-        double currentFrequency = voice.frequency + frequencyAdjustValues[i];
+        double currentFrequency = voice.frequency * frequencyMultiplier;
 
         double sampleIncrement = thisSample - voice.phaseSample;
         float phaseIncrement = (float)(sampleIncrement * currentFrequency / sampleFrequency);
         voice.phaseSample = thisSample;
         voice.phase = (voice.phase + phaseIncrement) % 1;
 
-        float currentVolume = (float)(voice.volume * volume * (1 + volumeAdjustValues[i]));
+        float currentVoiceVolume = (float)voice.volume * currentVolume;
         if (midi && envelope != null) {
           float? envVolume = envelope.GetVolume(
             voice.pressSample, voice.releaseSample, thisSample, sampleFrequency);
 
           if (envVolume == null) {
             midiVoices.Remove(voice.note);
-            currentVolume = 0;
+            currentVoiceVolume = 0;
           }
           else {
-            currentVolume *= (float)envVolume;
+            currentVoiceVolume *= (float)envVolume;
           }
         }
 
@@ -164,25 +170,24 @@ public class Oscillator : SignalModule {
         if (wave == WaveType.Sine) {
           value = Mathf.Sin((voice.phase * TAU));
 
-          float sineWaveform = Mathf.Lerp(-1, 1, currentWaveform);
-          for (int w = 1; w <= Mathf.Abs(sineWaveform) * waveformSineMultiplier; w++) {
+          for (int w = 1; w <= Mathf.Abs(currentWaveform) * waveformSineMultiplier; w++) {
             float m = 1 + w * 2;
-            value += Mathf.Sin((voice.phase * m * TAU)) / m * Mathf.Sign(sineWaveform);
+            value += Mathf.Sin((voice.phase * m * TAU)) / m * Mathf.Sign(currentWaveform);
           }
         }
         else if (wave == WaveType.Pulse) {
-          value = Mathf.Sign(voice.phase - currentWaveform);
+          value = Mathf.Sign(voice.phase - waveformPhase);
         }
         else if (wave == WaveType.Sloped) {
-          value = voice.phase < currentWaveform ?
-            Mathf.Lerp(-1, 1, Mathf.InverseLerp(0, currentWaveform, voice.phase)) :
-            Mathf.Lerp(1, -1, Mathf.InverseLerp(currentWaveform, 1, voice.phase));
+          value = voice.phase < waveformPhase ?
+            Mathf.Lerp(-1, 1, Mathf.InverseLerp(0, waveformPhase, voice.phase)) :
+            Mathf.Lerp(1, -1, Mathf.InverseLerp(waveformPhase, 1, voice.phase));
         }
         else if (wave == WaveType.Noise) {
           value = rand.NextDouble() * 2 - 1;
         }
 
-        values[i] += value * currentVolume;
+        values[i] += value * currentVoiceVolume;
       }
     }
 

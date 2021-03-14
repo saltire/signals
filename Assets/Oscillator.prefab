@@ -79,11 +79,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Waveform Input
       objectReference: {fileID: 0}
-    - target: {fileID: 3894246516184684604, guid: 0894dbca35a18ca4a8ed2a014442c78d,
-        type: 3}
-      propertyPath: amount
-      value: 0.5
-      objectReference: {fileID: 0}
     - target: {fileID: 6686153363655076287, guid: 0894dbca35a18ca4a8ed2a014442c78d,
         type: 3}
       propertyPath: m_RootOrder
@@ -140,11 +135,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Volume Input
-      objectReference: {fileID: 0}
-    - target: {fileID: 3894246516184684604, guid: 0894dbca35a18ca4a8ed2a014442c78d,
-        type: 3}
-      propertyPath: amount
-      value: 0.75
       objectReference: {fileID: 0}
     - target: {fileID: 6686153363655076287, guid: 0894dbca35a18ca4a8ed2a014442c78d,
         type: 3}
@@ -425,7 +415,7 @@ PrefabInstance:
     - target: {fileID: 3805190863320698957, guid: d29b15aaec161644eab555af1b95ddc4,
         type: 3}
       propertyPath: max
-      value: 10
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3805190863320698957, guid: d29b15aaec161644eab555af1b95ddc4,
         type: 3}
@@ -652,12 +642,12 @@ PrefabInstance:
     - target: {fileID: 3805190863320698957, guid: d29b15aaec161644eab555af1b95ddc4,
         type: 3}
       propertyPath: max
-      value: 10000
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3805190863320698957, guid: d29b15aaec161644eab555af1b95ddc4,
         type: 3}
       propertyPath: value
-      value: 440
+      value: 0.08
       objectReference: {fileID: 0}
     - target: {fileID: 3873207230198586257, guid: d29b15aaec161644eab555af1b95ddc4,
         type: 3}
@@ -914,11 +904,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Frequency Input
-      objectReference: {fileID: 0}
-    - target: {fileID: 3894246516184684604, guid: 0894dbca35a18ca4a8ed2a014442c78d,
-        type: 3}
-      propertyPath: amount
-      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 6686153363655076287, guid: 0894dbca35a18ca4a8ed2a014442c78d,
         type: 3}
