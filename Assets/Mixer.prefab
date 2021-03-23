@@ -242,6 +242,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2374520611383179400}
     m_Modifications:
+    - target: {fileID: 1985040631416922993, guid: 7c365abc7326ef54183979cdfcd5b35d,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: b88d1ae34a7ba744694f03d4786e6f5e, type: 2}
     - target: {fileID: 3984401603384465011, guid: 7c365abc7326ef54183979cdfcd5b35d,
         type: 3}
       propertyPath: color.b
@@ -252,6 +257,16 @@ PrefabInstance:
       propertyPath: color.r
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3984401603384465011, guid: 7c365abc7326ef54183979cdfcd5b35d,
+        type: 3}
+      propertyPath: onMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: 976e21a0dc39729429f164d292662570, type: 2}
+    - target: {fileID: 3984401603384465011, guid: 7c365abc7326ef54183979cdfcd5b35d,
+        type: 3}
+      propertyPath: offMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: b88d1ae34a7ba744694f03d4786e6f5e, type: 2}
     - target: {fileID: 4409402653325983038, guid: 7c365abc7326ef54183979cdfcd5b35d,
         type: 3}
       propertyPath: m_RootOrder

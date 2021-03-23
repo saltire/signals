@@ -20,18 +20,18 @@ IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler {
 
   protected Module parent;
   CableManager cables;
-  Material material;
+  MeshRenderer meshRenderer;
 
   void Awake() {
     parent = GetComponentInParent<Module>();
     cables = FindObjectOfType<CableManager>();
-    material = GetComponent<MeshRenderer>().material;
+    meshRenderer = GetComponent<MeshRenderer>();
   }
 
   public abstract bool IsConnected();
 
-  public void SetColor(Color color) {
-    material.color = color;
+  public void SetMaterial(Material material) {
+    meshRenderer.sharedMaterial = material;
   }
 
   public void OnPointerEnter(PointerEventData data) {
@@ -39,7 +39,7 @@ IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler {
   }
 
   public void OnPointerExit(PointerEventData data) {
-    SetColor(Color.white);
+    cables.OnPortExit(this);
   }
 
   public void OnPointerClick(PointerEventData data) {

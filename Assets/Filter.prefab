@@ -164,6 +164,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4116271851502779098}
     m_Modifications:
+    - target: {fileID: 1985040631416922993, guid: 7c365abc7326ef54183979cdfcd5b35d,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 2eb16a082bf4ed74db239cba4f7bfc52, type: 2}
     - target: {fileID: 3984401603384465011, guid: 7c365abc7326ef54183979cdfcd5b35d,
         type: 3}
       propertyPath: color.b
@@ -179,6 +184,16 @@ PrefabInstance:
       propertyPath: color.r
       value: 0.5019608
       objectReference: {fileID: 0}
+    - target: {fileID: 3984401603384465011, guid: 7c365abc7326ef54183979cdfcd5b35d,
+        type: 3}
+      propertyPath: onMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: d7439c9c60d94254eaa1203ea3a76dd8, type: 2}
+    - target: {fileID: 3984401603384465011, guid: 7c365abc7326ef54183979cdfcd5b35d,
+        type: 3}
+      propertyPath: offMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: 2eb16a082bf4ed74db239cba4f7bfc52, type: 2}
     - target: {fileID: 4409402653325983038, guid: 7c365abc7326ef54183979cdfcd5b35d,
         type: 3}
       propertyPath: m_RootOrder
@@ -323,6 +338,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4116271851502779098}
     m_Modifications:
+    - target: {fileID: 1985040631416922993, guid: 7c365abc7326ef54183979cdfcd5b35d,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 2eb16a082bf4ed74db239cba4f7bfc52, type: 2}
     - target: {fileID: 3984401603384465011, guid: 7c365abc7326ef54183979cdfcd5b35d,
         type: 3}
       propertyPath: color.b
@@ -338,6 +358,16 @@ PrefabInstance:
       propertyPath: color.r
       value: 0.5019608
       objectReference: {fileID: 0}
+    - target: {fileID: 3984401603384465011, guid: 7c365abc7326ef54183979cdfcd5b35d,
+        type: 3}
+      propertyPath: onMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: d7439c9c60d94254eaa1203ea3a76dd8, type: 2}
+    - target: {fileID: 3984401603384465011, guid: 7c365abc7326ef54183979cdfcd5b35d,
+        type: 3}
+      propertyPath: offMaterial
+      value: 
+      objectReference: {fileID: 2100000, guid: 2eb16a082bf4ed74db239cba4f7bfc52, type: 2}
     - target: {fileID: 4409402653325983038, guid: 7c365abc7326ef54183979cdfcd5b35d,
         type: 3}
       propertyPath: m_RootOrder

@@ -21,6 +21,10 @@ public class CableManager : MonoBehaviour {
   public float cableColliderWidth = .3f;
   public float cableHoldY = 3;
 
+  public Material defaultPortMaterial;
+  public Material connectPortMaterial;
+  public Material disconnectPortMaterial;
+
   CameraUtil cameraUtil;
 
   Cable heldCable;
@@ -127,12 +131,16 @@ public class CableManager : MonoBehaviour {
     // Turn port green if clicking will connect a cable.
     if (!portHasCable && (!holdingCable ||
       (holdingType == port.Type && holdingSide == port.Side))) {
-      port.SetColor(Color.green);
+      port.SetMaterial(connectPortMaterial);
     }
     // Turn port yellow if clicking will disconnect a cable.
     else if (portHasCable && (!holdingCable || heldCable == connectedCable)) {
-      port.SetColor(Color.yellow);
+      port.SetMaterial(disconnectPortMaterial);
     }
+  }
+
+  public void OnPortExit(Port port) {
+    port.SetMaterial(defaultPortMaterial);
   }
 
   public void OnPortClick(Port port) {

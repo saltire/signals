@@ -4,20 +4,19 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 public class Button : MonoBehaviour, IPointerClickHandler, IPointerDownHandler, IPointerUpHandler {
-  public Color color = Color.red;
-
   Module parent;
 
-  Material material;
+  public Material offMaterial;
+  public Material onMaterial;
+  MeshRenderer meshRenderer;
 
   void Awake() {
-    material = GetComponent<MeshRenderer>().material;
-    material.color = color;
     parent = GetComponentInParent<Module>();
+    meshRenderer = GetComponent<MeshRenderer>();
   }
 
   public void SetGlow(bool glowing) {
-    material.SetColor("_EmissionColor", glowing ? color : Color.black);
+    meshRenderer.sharedMaterial = glowing ? onMaterial : offMaterial;
   }
 
   public void OnPointerClick(PointerEventData data) {

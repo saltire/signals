@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 1985040631416922993}
   - component: {fileID: 700765771613912484}
   m_Layer: 0
-  m_Name: Button
+  m_Name: On-Off Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -46,7 +46,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a06c2854767c6f4c8d9edb94206787c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  color: {r: 0.5019608, g: 0, b: 0, a: 1}
+  offMaterial: {fileID: 2100000, guid: 544ede94bb8264f45a5035ef7fd7a04e, type: 2}
+  onMaterial: {fileID: 2100000, guid: 1c172f1c7e222354eb87bdb4664b53c3, type: 2}
 --- !u!33 &3201290611205264060
 MeshFilter:
   m_ObjectHideFlags: 0

@@ -2120,6 +2120,10 @@ MonoBehaviour:
   cableWidth: 0.1
   cableColliderWidth: 0.3
   cableHoldY: 3
+  defaultPortMaterial: {fileID: 2100000, guid: 41c7f79f2cd08d14bb5fcd0fb22ee720, type: 2}
+  connectPortMaterial: {fileID: 2100000, guid: 49ba827433ab0914293432f785996985, type: 2}
+  disconnectPortMaterial: {fileID: 2100000, guid: 6c868a6cecfe9b845bc9b2add365f93e,
+    type: 2}
 --- !u!4 &1912822627
 Transform:
   m_ObjectHideFlags: 0
