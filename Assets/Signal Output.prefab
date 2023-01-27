@@ -13,8 +13,8 @@ GameObject:
   - component: {fileID: 6022078306080976615}
   - component: {fileID: 4939912928276983887}
   - component: {fileID: 7136163929486142293}
-  m_Layer: 0
-  m_Name: Output
+  m_Layer: 3
+  m_Name: Signal Output
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -30,6 +30,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0.5, z: -1}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -46,7 +47,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b2bbf918be7dcd54b8f2e5e67f6c4c06, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  type: 0
+  connectedInput: {fileID: 0}
 --- !u!33 &6022078306080976615
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -66,6 +67,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
