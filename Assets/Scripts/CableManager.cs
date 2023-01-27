@@ -33,6 +33,8 @@ public class CableManager : MonoBehaviour {
   void Awake() {
     cameraUtil = FindObjectOfType<CameraUtil>();
 
+    Background.backgroundClickDelegate += OnBackgroundClick;
+
     InitCables();
   }
 
